@@ -73,7 +73,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
     /**
      * Add value to the tree and return the Node that was added. Tree can
      * contain multiple equal values.
-     * 
+     *
      * @param value
      *            T to add to the tree.
      * @return Node<T> which was added to the tree.
@@ -127,7 +127,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
 
     /**
      * Locate T in the tree.
-     * 
+     *
      * @param value
      *            T to locate in the tree.
      * @return Node<T> representing first reference of value in tree or NULL if
@@ -149,7 +149,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
 
     /**
      * Rotate tree left at sub-tree rooted at node.
-     * 
+     *
      * @param node
      *            Root of tree to rotate left.
      */
@@ -183,7 +183,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
 
     /**
      * Rotate tree right at sub-tree rooted at node.
-     * 
+     *
      * @param node
      *            Root of tree to rotate right.
      */
@@ -218,7 +218,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
     /**
      * Get greatest node in sub-tree rooted at startingNode. The search does not
      * include startingNode in it's results.
-     * 
+     *
      * @param startingNode
      *            Root of tree to search.
      * @return Node<T> which represents the greatest node in the startingNode
@@ -242,7 +242,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
     /**
      * Get least node in sub-tree rooted at startingNode. The search does not
      * include startingNode in it's results.
-     * 
+     *
      * @param startingNode
      *            Root of tree to search.
      * @return Node<T> which represents the least node in the startingNode
@@ -274,21 +274,21 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
 
     /**
      * Remove first occurrence of value in the tree.
-     * 
+     *
      * @param value
      *            T to remove from the tree.
      * @return Node<T> which was removed from the tree.
      */
     protected Node<T> removeValue(T value) {
         Node<T> nodeToRemoved = this.getNode(value);
-        if (nodeToRemoved != null) 
+        if (nodeToRemoved != null)
             nodeToRemoved = removeNode(nodeToRemoved);
         return nodeToRemoved;
     }
 
     /**
      * Remove the node using a replacement
-     * 
+     *
      * @param nodeToRemoved
      *            Node<T> to remove from the tree.
      * @return nodeRemove
@@ -306,7 +306,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
     /**
      * Get the proper replacement node according to the binary search tree
      * algorithm from the tree.
-     * 
+     *
      * @param nodeToRemoved
      *            Node<T> to find a replacement for.
      * @return Node<T> which can be used to replace nodeToRemoved. nodeToRemoved
@@ -340,7 +340,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
 
     /**
      * Replace nodeToRemoved with replacementNode in the tree.
-     * 
+     *
      * @param nodeToRemoved
      *            Node<T> to remove replace in the tree. nodeToRemoved should
      *            NOT be NULL.
@@ -431,7 +431,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
 
     /**
      * Validate the node for all Binary Search Tree invariants.
-     * 
+     *
      * @param node
      *            Node<T> to validate in the tree. node should NOT be NULL.
      * @return True if the node is valid.
@@ -460,19 +460,19 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
 
     /**
      * Get an array representation of the tree in breath first search order.
-     * 
+     *
      * @return breath first search sorted array representing the tree.
      */
-    public T[] getBFS() { 
+    public T[] getBFS() {
         return getBFS(this.root, this.size);
     }
 
     /**
      * Get an array representation of the tree in breath first search order.
-     * 
+     *
      * @param start rooted node
      * @param size of tree rooted at start
-     * 
+     *
      * @return breath first search sorted array representing the tree.
      */
     public static <T extends Comparable<T>> T[] getBFS(Node<T> start, int size) {
@@ -496,7 +496,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
 
     /**
      * Get an array representation of the tree in level order.
-     * 
+     *
      * @return level order sorted array representing the tree.
      */
     public T[] getLevelOrder() {
@@ -505,9 +505,9 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
 
     /**
      * Get an array representation of the tree in-order.
-     * 
+     *
      * @param order of search
-     * 
+     *
      * @return order sorted array representing the tree.
      */
     public T[] getDFS(DepthFirstSearchOrder order) {
@@ -516,11 +516,11 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
 
     /**
      * Get an array representation of the tree in-order.
-     * 
+     *
      * @param order of search
      * @param start rooted node
      * @param size of tree rooted at start
-     * 
+     *
      * @return order sorted array representing the tree.
      */
     public static <T extends Comparable<T>> T[] getDFS(DepthFirstSearchOrder order, Node<T> start, int size) {
@@ -535,10 +535,10 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
             Node<T> greater = (node.greater != null && !added.contains(node.greater)) ? node.greater : null;
 
             if (parent == null && lesser == null && greater == null) {
-                System.out.println("2");
+                //System.out.println("2");
                 if (!added.contains(node)){
                     nodes[index++] = node.id;
-                    System.out.println("4");
+                    //System.out.println("4");
                 }else{
                     System.out.println("5");
                 }
@@ -549,24 +549,24 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
             }
 
             if (order == DepthFirstSearchOrder.inOrder) {
-                System.out.println("7");
+                //System.out.println("7");
                 if (lesser != null) {
-                    System.out.println("8");
+                    //System.out.println("8");
                     node = lesser;
                 } else {
-                    System.out.println("9");
+                    //System.out.println("9");
                     if (!added.contains(node)) {
-                        System.out.println("10");
+                        //System.out.println("10");
                         nodes[index++] = node.id;
                         added.add(node);
                     }else{
-                       System.out.println("11"); 
+                       //System.out.println("11");
                     }
                     if (greater != null) {
-                        System.out.println("12");
+                        //System.out.println("12");
                         node = greater;
                     } else if (added.contains(node)) {
-                        System.out.println("13");
+                        //System.out.println("13");
                         node = parent;
                     } else {
                         System.out.println("14");
@@ -624,7 +624,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
 
     /**
      * Get an array representation of the tree in sorted order.
-     * 
+     *
      * @return sorted array representing the tree.
      */
     public T[] getSorted() {
@@ -657,7 +657,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
 
         /**
          * Node constructor.
-         * 
+         *
          * @param parent
          *            Parent link in tree. parent can be NULL.
          * @param id
@@ -682,7 +682,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
 
         /**
          * Create a new Node with the following parameters.
-         * 
+         *
          * @param parent
          *            of this node.
          * @param id
@@ -796,7 +796,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
              */
             @Override
             public boolean hasNext() {
-                if (toVisit.size()>0) return true; 
+                if (toVisit.size()>0) return true;
                 return false;
             }
 
