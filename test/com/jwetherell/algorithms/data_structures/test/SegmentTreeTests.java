@@ -125,7 +125,7 @@ public class SegmentTreeTests {
         segments.add(new SegmentTree.Data.RangeMinimumData<Integer>(4,  (Integer) 1));
         segments.add(new SegmentTree.Data.RangeMinimumData<Integer>(5,  (Integer) 5));
         segments.add(new SegmentTree.Data.RangeMinimumData<Integer>(6,  (Integer) 0));
-        segments.add(new SegmentTree.Data.RangeMinimumData<Integer>(17, (Integer) 7));    
+        segments.add(new SegmentTree.Data.RangeMinimumData<Integer>(17, (Integer) 7));
 
         // No matter which order the data is given, all tests should pass
 
@@ -183,7 +183,7 @@ public class SegmentTreeTests {
         segments.add(new SegmentTree.Data.RangeSumData<Integer>(4,  (Integer) 1));
         segments.add(new SegmentTree.Data.RangeSumData<Integer>(5,  (Integer) 5));
         segments.add(new SegmentTree.Data.RangeSumData<Integer>(6,  (Integer) 0));
-        segments.add(new SegmentTree.Data.RangeSumData<Integer>(17, (Integer) 7));   
+        segments.add(new SegmentTree.Data.RangeSumData<Integer>(17, (Integer) 7));
 
         // No matter which order the data is given, all tests should pass
 
@@ -288,7 +288,7 @@ public class SegmentTreeTests {
     final String BLACK      = "BLACK";
 
     @Test
-    public void testIntervalSegmentTree() { 
+    public void testIntervalSegmentTree() {
         java.util.List<SegmentTree.Data.IntervalData<String>> segments = new ArrayList<SegmentTree.Data.IntervalData<String>>();
         segments.add((new SegmentTree.Data.IntervalData<String>(2,  6,  RED)));
         segments.add((new SegmentTree.Data.IntervalData<String>(3,  5,  ORANGE)));
@@ -412,7 +412,7 @@ public class SegmentTreeTests {
         query = tree.query(12,14); // Range query
         assertTrue("Segment Tree query error. returned=" + query, tree, collectionsEqual(query.getData(), Arrays.asList()));
     }
-    
+
     private static boolean collectionsEqual(Collection<?> c1, Collection<?> c2) {
         if (c1.size()!=c2.size()) return false;
         return c1.containsAll(c2) && c2.containsAll(c1);
@@ -423,7 +423,7 @@ public class SegmentTreeTests {
         public int compare(Data arg0, Data arg1) {
             int r = arg0.compareTo(arg1);
             return r*-1;
-        }       
+        }
     };
 
     // Assertion which won't call toString on the tree unless the assertion fails
@@ -432,5 +432,27 @@ public class SegmentTreeTests {
         if (isTrue==false)
             toString = "\n"+obj.toString();
         Assert.assertTrue(msg+toString, isTrue);
+    }
+
+    @Test
+    public void testSeg () {
+        // The following warnings should go unchecked to check a case
+        // where rmax1.combined(rmin2) should reach a branch where
+        // both maximum (respectively) are null.
+        @SuppressWarnings("unchecked")
+        SegmentTree.Data.RangeMaximumData<Integer> rmax1 =
+            new SegmentTree.Data.RangeMaximumData(-12, 13, (Integer) null);
+
+        @SuppressWarnings("unchecked")
+        SegmentTree.Data.RangeMaximumData<Integer> rmax2 =
+            new SegmentTree.Data.RangeMaximumData(-12, 14, (Integer) null);
+
+        // The branch taken should just return from the
+        // inner function and then return 'this' which should be equal
+        // to the object it was called from.
+        @SuppressWarnings("unchecked")
+        SegmentTree.Data.RangeMaximumData<Integer> res =
+            (SegmentTree.Data.RangeMaximumData)rmax1.combined(rmax2);
+        Assert.assertTrue(rmax1 == res);
     }
 }
