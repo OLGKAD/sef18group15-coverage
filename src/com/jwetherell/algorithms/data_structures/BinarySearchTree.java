@@ -529,56 +529,87 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
         int index = 0;
         Node<T> node = start;
         while (index < size && node != null) {
+            System.out.println("1");
             Node<T> parent = node.parent;
             Node<T> lesser = (node.lesser != null && !added.contains(node.lesser)) ? node.lesser : null;
             Node<T> greater = (node.greater != null && !added.contains(node.greater)) ? node.greater : null;
 
             if (parent == null && lesser == null && greater == null) {
-                if (!added.contains(node))
+                System.out.println("2");
+                if (!added.contains(node)){
                     nodes[index++] = node.id;
+                    System.out.println("4");
+                }else{
+                    System.out.println("5");
+                }
                 break;
+            }
+            else{
+                System.out.println("6");
             }
 
             if (order == DepthFirstSearchOrder.inOrder) {
+                System.out.println("7");
                 if (lesser != null) {
+                    System.out.println("8");
                     node = lesser;
                 } else {
+                    System.out.println("9");
                     if (!added.contains(node)) {
+                        System.out.println("10");
                         nodes[index++] = node.id;
                         added.add(node);
+                    }else{
+                       System.out.println("11"); 
                     }
                     if (greater != null) {
+                        System.out.println("12");
                         node = greater;
                     } else if (added.contains(node)) {
+                        System.out.println("13");
                         node = parent;
                     } else {
+                        System.out.println("14");
                         // We should not get here. Stop the loop!
                         node = null;
                     }
                 }
             } else if (order == DepthFirstSearchOrder.preOrder) {
+                System.out.println("15");
                 if (!added.contains(node)) {
+                    System.out.println("16");
                     nodes[index++] = node.id;
                     added.add(node);
+                }else{
+                    System.out.println("17");
                 }
                 if (lesser != null) {
+                    System.out.println("18");
                     node = lesser;
                 } else if (greater != null) {
+                    System.out.println("19");
                     node = greater;
                 } else if (added.contains(node)) {
+                    System.out.println("20");
                     node = parent;
                 } else {
+                    System.out.println("21");
                     // We should not get here. Stop the loop!
                     node = null;
                 }
             } else {
+                System.out.println("22");
                 // post-Order
                 if (lesser != null) {
+                    System.out.println("23");
                     node = lesser;
                 } else {
+                    System.out.println("24");
                     if (greater != null) {
+                        System.out.println("25");
                         node = greater;
                     } else {
+                        System.out.println("26");
                         // lesser==null && greater==null
                         nodes[index++] = node.id;
                         added.add(node);
@@ -587,6 +618,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
                 }
             }
         }
+        System.out.println("27");
         return nodes;
     }
 
