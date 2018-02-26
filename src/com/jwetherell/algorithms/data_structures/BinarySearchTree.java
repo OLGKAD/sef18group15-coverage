@@ -598,18 +598,18 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
                     node = null;
                 }
             } else {
-                System.out.println("22");
+               // System.out.println("22");
                 // post-Order
                 if (lesser != null) {
-                    System.out.println("23");
+                 //   System.out.println("23");
                     node = lesser;
                 } else {
-                    System.out.println("24");
+                   // System.out.println("24");
                     if (greater != null) {
-                        System.out.println("25");
+                     //   System.out.println("25");
                         node = greater;
                     } else {
-                        System.out.println("26");
+                       // System.out.println("26");
                         // lesser==null && greater==null
                         nodes[index++] = node.id;
                         added.add(node);
