@@ -37,9 +37,9 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
     public BTree() { }
 
     /**
-     * Constructor for B-Tree of ordered parameter. Order here means minimum 
-     * number of keys in a non-root node. 
-     * 
+     * Constructor for B-Tree of ordered parameter. Order here means minimum
+     * number of keys in a non-root node.
+     *
      * @param order
      *            of the B-Tree.
      */
@@ -66,7 +66,7 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
                     if (node.numberOfKeys() <= maxKeySize) {
                         // A-OK
                         break;
-                    }                         
+                    }
                     // Need to split up
                     split(node);
                     break;
@@ -108,7 +108,7 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
 
     /**
      * The node's key size is greater than maxKeySize, split down the middle.
-     * 
+     *
      * @param nodeToSplit
      *            to split.
      */
@@ -174,7 +174,7 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
 
     /**
      * Remove the value from the Node and check invariants
-     * 
+     *
      * @param value
      *            T to remove from the tree
      * @param node
@@ -216,7 +216,7 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
 
     /**
      * Remove greatest valued key from node.
-     * 
+     *
      * @param node
      *            to remove greatest value from.
      * @return value removed;
@@ -249,7 +249,7 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
 
     /**
      * Get the node with value.
-     * 
+     *
      * @param value
      *            to find in the tree.
      * @return Node<T> with value.
@@ -301,7 +301,7 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
 
     /**
      * Get the greatest valued child from node.
-     * 
+     *
      * @param nodeToGet
      *            child with the greatest value.
      * @return Node<T> child with greatest value.
@@ -314,9 +314,18 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
         return node;
     }
 
+    private static boolean[] combinedConds = new boolean[16];
+
+    private void checkCond (int index) {
+        if (!combinedConds[index]) {
+            combinedConds[index] = true;
+            System.out.printf("[combined()] Branch id %d taken%n", index);
+        }
+    }
+
     /**
      * Combined children keys with parent when size is less than minKeySize.
-     * 
+     *
      * @param node
      *            with children to combined.
      * @return True if combined successfully.
@@ -330,12 +339,14 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
         Node<T> rightNeighbor = null;
         int rightNeighborSize = -minChildrenSize;
         if (indexOfRightNeighbor < parent.numberOfChildren()) {
+            checkCond(0);
             rightNeighbor = parent.getChild(indexOfRightNeighbor);
             rightNeighborSize = rightNeighbor.numberOfKeys();
         }
 
         // Try to borrow neighbor
         if (rightNeighbor != null && rightNeighborSize > minKeySize) {
+            checkCond(1);
             // Try to borrow from right neighbor
             T removeValue = rightNeighbor.getKey(0);
             int prev = getIndexOfPreviousValue(parent, removeValue);
@@ -344,17 +355,21 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
             node.addKey(parentValue);
             parent.addKey(neighborValue);
             if (rightNeighbor.numberOfChildren() > 0) {
+                checkCond(2);
                 node.addChild(rightNeighbor.removeChild(0));
             }
         } else {
+            checkCond(3);
             Node<T> leftNeighbor = null;
             int leftNeighborSize = -minChildrenSize;
             if (indexOfLeftNeighbor >= 0) {
+                checkCond(4);
                 leftNeighbor = parent.getChild(indexOfLeftNeighbor);
                 leftNeighborSize = leftNeighbor.numberOfKeys();
             }
 
             if (leftNeighbor != null && leftNeighborSize > minKeySize) {
+                checkCond(5);
                 // Try to borrow from left neighbor
                 T removeValue = leftNeighbor.getKey(leftNeighbor.numberOfKeys() - 1);
                 int prev = getIndexOfNextValue(parent, removeValue);
@@ -363,9 +378,11 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
                 node.addKey(parentValue);
                 parent.addKey(neighborValue);
                 if (leftNeighbor.numberOfChildren() > 0) {
+                    checkCond(6);
                     node.addChild(leftNeighbor.removeChild(leftNeighbor.numberOfChildren() - 1));
                 }
             } else if (rightNeighbor != null && parent.numberOfKeys() > 0) {
+                checkCond(7);
                 // Can't borrow from neighbors, try to combined with right neighbor
                 T removeValue = rightNeighbor.getKey(0);
                 int prev = getIndexOfPreviousValue(parent, removeValue);
@@ -373,24 +390,29 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
                 parent.removeChild(rightNeighbor);
                 node.addKey(parentValue);
                 for (int i = 0; i < rightNeighbor.keysSize; i++) {
+                    checkCond(7);
                     T v = rightNeighbor.getKey(i);
                     node.addKey(v);
                 }
                 for (int i = 0; i < rightNeighbor.childrenSize; i++) {
+                    checkCond(8);
                     Node<T> c = rightNeighbor.getChild(i);
                     node.addChild(c);
                 }
 
                 if (parent.parent != null && parent.numberOfKeys() < minKeySize) {
+                    checkCond(9);
                     // removing key made parent too small, combined up tree
                     this.combined(parent);
                 } else if (parent.numberOfKeys() == 0) {
+                    checkCond(10);
                     // parent no longer has keys, make this node the new root
                     // which decreases the height of the tree
                     node.parent = null;
                     root = node;
                 }
             } else if (leftNeighbor != null && parent.numberOfKeys() > 0) {
+                checkCond(11);
                 // Can't borrow from neighbors, try to combined with left neighbor
                 T removeValue = leftNeighbor.getKey(leftNeighbor.numberOfKeys() - 1);
                 int prev = getIndexOfNextValue(parent, removeValue);
@@ -398,18 +420,22 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
                 parent.removeChild(leftNeighbor);
                 node.addKey(parentValue);
                 for (int i = 0; i < leftNeighbor.keysSize; i++) {
+                    checkCond(12);
                     T v = leftNeighbor.getKey(i);
                     node.addKey(v);
                 }
                 for (int i = 0; i < leftNeighbor.childrenSize; i++) {
+                    checkCond(13);
                     Node<T> c = leftNeighbor.getChild(i);
                     node.addChild(c);
                 }
 
                 if (parent.parent != null && parent.numberOfKeys() < minKeySize) {
+                    checkCond(14);
                     // removing key made parent too small, combined up tree
                     this.combined(parent);
                 } else if (parent.numberOfKeys() == 0) {
+                    checkCond(15);
                     // parent no longer has keys, make this node the new root
                     // which decreases the height of the tree
                     node.parent = null;
@@ -423,7 +449,7 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
 
     /**
      * Get the index of previous key in node.
-     * 
+     *
      * @param node
      *            to find the previous key in.
      * @param value
@@ -441,7 +467,7 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
 
     /**
      * Get the index of next key in node.
-     * 
+     *
      * @param node
      *            to find the next key in.
      * @param value
@@ -476,7 +502,7 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
 
     /**
      * Validate the node according to the B-Tree invariants.
-     * 
+     *
      * @param node
      *            to validate.
      * @return True if valid.
@@ -844,7 +870,7 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
              */
             @Override
             public boolean hasNext() {
-                if ((lastNode!=null && index<lastNode.keysSize)||(toVisit.size()>0)) return true; 
+                if ((lastNode!=null && index<lastNode.keysSize)||(toVisit.size()>0)) return true;
                 return false;
             }
 
