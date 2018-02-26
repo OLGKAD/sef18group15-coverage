@@ -188,7 +188,7 @@ public interface BinaryHeap<T extends Comparable<T>> extends IHeap<T> {
             // the index is out of range
             if (value==null)  {
                 heapDownBranchCoverage.add(1);
-              //  System.out.println(heapDownBranchCoverage);
+                //System.out.println(heapDownBranchCoverage);
                 return;
             } else {
               heapDownBranchCoverage.add(2);
@@ -217,7 +217,7 @@ public interface BinaryHeap<T extends Comparable<T>> extends IHeap<T> {
                 || (type == Type.MAX && left != null && right != null && value.compareTo(left) < 0 && value.compareTo(right) < 0)) { // pi += 5
                   heapDownBranchCoverage.add(5);
                 // Both children are greater/lesser than node
-                // the right child exists and should be swapped with the current node
+                // the right child should be swapped with the current node
 
                 //////// isn't the != null condition checked in the parent if-clause?????
                 if ((right!=null) && // pi += 1
@@ -227,7 +227,7 @@ public interface BinaryHeap<T extends Comparable<T>> extends IHeap<T> {
                     // Right is greater/lesser than left
                     nodeToMove = right;
                     nodeToMoveIndex = rightIndex;
-                // the left child exists and should be swapped with the current node
+                // the left child should be swapped with the current node
                 } else if ((left!=null) && // pi += 1
                            ((type == Type.MIN && left.compareTo(right) < 0) || (type == Type.MAX && left.compareTo(right) > 0)) // pi += 4
                 ) {
@@ -235,7 +235,8 @@ public interface BinaryHeap<T extends Comparable<T>> extends IHeap<T> {
                     // Left is greater/lesser than right
                     nodeToMove = left;
                     nodeToMoveIndex = leftIndex;
-                ///// this branch is never reached as it can never be reached... this condition will never hold. It's eleminated by the above three if-clauses
+                // right child == left child
+                // since test data is generated randomly, it's very unlikely that two nodes, sharing the same parent, will get assigned the same value
                 } else {
                   heapDownBranchCoverage.add(8);
                   System.out.println(8);
