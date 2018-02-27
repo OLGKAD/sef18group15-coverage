@@ -20,13 +20,14 @@ public class SplayTreeTests {
         TestData data = Utils.generateTestData(1000);
 
         String bstName = "Splay Tree";
-        BinarySearchTree<Integer> bst = new SplayTree<Integer>();
+        SplayTree<Integer> bst = new SplayTree<Integer>();
         Collection<Integer> bstCollection = bst.toCollection();
 
         assertTrue(TreeTest.testTree(bst, Integer.class, bstName,
                                      data.unsorted, data.invalid));
         assertTrue(JavaCollectionTest.testCollection(bstCollection, Integer.class, bstName,
                                                      data.unsorted, data.sorted, data.invalid));
+        bst.printChecks();
     }
 
 }
