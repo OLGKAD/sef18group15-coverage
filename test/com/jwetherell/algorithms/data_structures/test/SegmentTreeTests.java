@@ -442,6 +442,8 @@ public class SegmentTreeTests {
         //Test that both branches are reached when Long is used as number representation
         SegmentTree.Data.RangeMaximumData<BigInteger> max1 = new SegmentTree.Data.RangeMaximumData<BigInteger>(-5,5,BigInteger.valueOf(3));
         SegmentTree.Data.RangeMaximumData<BigInteger> max2 = new SegmentTree.Data.RangeMaximumData<BigInteger>(-5,5,BigInteger.valueOf(4));
+
+        @SuppressWarnings("unchecked")
         SegmentTree.Data.RangeMaximumData<BigInteger> shouldBeMax2 = (SegmentTree.Data.RangeMaximumData)max1.combined(max2);
         //Assert that the value changed
         Assert.assertTrue(shouldBeMax2.maximum.equals(max2.maximum));
@@ -458,6 +460,8 @@ public class SegmentTreeTests {
         //Test that both branches are reached when Long is used as number representation
         SegmentTree.Data.RangeMaximumData<Long> max1 = new SegmentTree.Data.RangeMaximumData<Long>(-5,5,Long.valueOf(3));
         SegmentTree.Data.RangeMaximumData<Long> max2 = new SegmentTree.Data.RangeMaximumData<Long>(-5,5,Long.valueOf(4));
+        
+        @SuppressWarnings("unchecked")
         SegmentTree.Data.RangeMaximumData<Long> shouldBeMax2 = (SegmentTree.Data.RangeMaximumData)max1.combined(max2);
         //Assert that the value changed
         Assert.assertEquals(shouldBeMax2.maximum , max2.maximum);
@@ -466,7 +470,7 @@ public class SegmentTreeTests {
         max2.combined(max1);
         //Assert that both variables are now the same
         Assert.assertEquals(max1.maximum , max2.maximum);
-
+    }
   
 /*
  * Testing if 5 is less than 6.
