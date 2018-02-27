@@ -200,16 +200,17 @@ public interface BinaryHeap<T extends Comparable<T>> extends IHeap<T> {
 
             T nodeToMove = null;
             int nodeToMoveIndex = -1;
-            if ((type == Type.MIN && left != null && right != null && value.compareTo(left) > 0 && value.compareTo(right) > 0) // pi += 5
-                || (type == Type.MAX && left != null && right != null && value.compareTo(left) < 0 && value.compareTo(right) < 0)) { // pi += 5
+            // the null criteria can only be checked once instead of twice
+            // that will reduce CC by 2
+
+            if ((left != null && right != null) && ((type == Type.MIN  && value.compareTo(left) > 0 && value.compareTo(right) > 0) // pi += 5
+                || (type == Type.MAX && value.compareTo(left) < 0 && value.compareTo(right) < 0))) { // pi += 5
                 // Both children are greater/lesser than node
-                if ((right!=null) && // pi += 1
-                    ((type == Type.MIN && (right.compareTo(left) < 0)) || ((type == Type.MAX && right.compareTo(left) > 0))) // pi += 4
-                ) {
-                    // Right is greater/lesser than left
-                    nodeToMove = right;
-                    nodeToMoveIndex = rightIndex;
-                } else if ((left!=null) && // pi += 1
+
+                // reduced CC by 1
+                if (// pi += 1
+                // in every other case we're doing the same thing, so the if branch above shouldn't not exist.
+                // that will reduce CC by 5
                            ((type == Type.MIN && left.compareTo(right) < 0) || (type == Type.MAX && left.compareTo(right) > 0)) // pi += 4
                 ) {
                     // Left is greater/lesser than right
@@ -220,22 +221,30 @@ public interface BinaryHeap<T extends Comparable<T>> extends IHeap<T> {
                     nodeToMove = right;
                     nodeToMoveIndex = rightIndex;
                 }
-            } else if ((type == Type.MIN && right != null && value.compareTo(right) > 0) // pi += 3
-                       || (type == Type.MAX && right != null && value.compareTo(right) < 0) // pi += 3
+                // the null criteria can only be checked once instead of twice
+                // that will reduce CC by 1
+            } else if ((right != null) && ((type == Type.MIN && value.compareTo(right) > 0) // pi += 3
+                       || (type == Type.MAX && value.compareTo(right) < 0)) // pi += 3
             ) {
                 // Right is greater/lesser than node
                 nodeToMove = right;
                 nodeToMoveIndex = rightIndex;
-            } else if ((type == Type.MIN && left != null && value.compareTo(left) > 0) // pi += 3
-                       || (type == Type.MAX && left != null && value.compareTo(left) < 0) // pi += 3
+                // the null criteria can only be checked once instead of twice
+                // that will reduce CC by 1
+            } else if ((left != null) && ((type == Type.MIN && value.compareTo(left) > 0) // pi += 3
+                       || (type == Type.MAX && value.compareTo(left) < 0)) // pi += 3
             ) {
                 // Left is greater/lesser than node
                 nodeToMove = left;
                 nodeToMoveIndex = leftIndex;
             }
             // No node to move, stop recursion
-            if (nodeToMove == null) // pi += 1
-                return; // s += 1
+            // could be included in the else statement instead, reducing CC by 1
+            else {
+              return;
+            }
+          //  if (nodeToMove == null) // pi += 1
+            //    return; // s += 1
 
             // Re-factor heap sub-tree
             this.array[nodeToMoveIndex] = value;
