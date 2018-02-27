@@ -1,4 +1,3 @@
-
 package com.jwetherell.algorithms.data_structures;
 
 import java.util.ArrayDeque;
@@ -31,10 +30,7 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
 
     private Node<T> root = null;
     private int size = 0;
-    
-    private static boolean[] conditions = new boolean[16];
 
-    
     /**
      * Constructor for B-Tree which defaults to a 2-3 B-Tree.
      */
@@ -474,9 +470,7 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
      */
     @Override
     public boolean validate() {
-        if (root == null){
-            return true;
-        }
+        if (root == null) return true;
         return validateNode(root);
     }
 
@@ -494,10 +488,8 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
             for (int i = 1; i < keySize; i++) {
                 T p = node.getKey(i - 1);
                 T n = node.getKey(i);
-                if (p.compareTo(n) > 0){
-                    checkCond(0);
+                if (p.compareTo(n) > 0)
                     return false;
-                }
             }
         }
         int childrenSize = node.numberOfChildren();
@@ -505,93 +497,66 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
             // root
             if (keySize > maxKeySize) {
                 // check max key size. root does not have a min key size
-                checkCond(1);
                 return false;
             } else if (childrenSize == 0) {
                 // if root, no children, and keys are valid
-                checkCond(2);
                 return true;
             } else if (childrenSize < 2) {
                 // root should have zero or at least two children
-                checkCond(3);
                 return false;
             } else if (childrenSize > maxChildrenSize) {
-                checkCond(4);
                 return false;
             }
         } else {
             // non-root
             if (keySize < minKeySize) {
-                checkCond(5);
                 return false;
             } else if (keySize > maxKeySize) {
-                checkCond(6);
                 return false;
             } else if (childrenSize == 0) {
-                checkCond(7);
                 return true;
             } else if (keySize != (childrenSize - 1)) {
-                checkCond(8);
-                // If there are children, there should be one more child then
+                // If there are chilren, there should be one more child then
                 // keys
                 return false;
             } else if (childrenSize < minChildrenSize) {
-                checkCond(9);
                 return false;
             } else if (childrenSize > maxChildrenSize) {
-                checkCond(10);
                 return false;
             }
         }
 
         Node<T> first = node.getChild(0);
         // The first child's last key should be less than the node's first key
-        if (first.getKey(first.numberOfKeys() - 1).compareTo(node.getKey(0)) > 0) {
-            checkCond(11);
+        if (first.getKey(first.numberOfKeys() - 1).compareTo(node.getKey(0)) > 0)
             return false;
-        }
+
         Node<T> last = node.getChild(node.numberOfChildren() - 1);
         // The last child's first key should be greater than the node's last key
-        if (last.getKey(0).compareTo(node.getKey(node.numberOfKeys() - 1)) < 0) {
-            checkCond(12);
+        if (last.getKey(0).compareTo(node.getKey(node.numberOfKeys() - 1)) < 0)
             return false;
-        }
 
         // Check that each node's first and last key holds it's invariance
         for (int i = 1; i < node.numberOfKeys(); i++) {
             T p = node.getKey(i - 1);
             T n = node.getKey(i);
             Node<T> c = node.getChild(i);
-            if (p.compareTo(c.getKey(0)) > 0){
-                checkCond(13);
+            if (p.compareTo(c.getKey(0)) > 0)
                 return false;
-            }
-            if (n.compareTo(c.getKey(c.numberOfKeys() - 1)) < 0){
-                checkCond(14); 
+            if (n.compareTo(c.getKey(c.numberOfKeys() - 1)) < 0)
                 return false;
-            }
         }
 
         for (int i = 0; i < node.childrenSize; i++) {
             Node<T> c = node.getChild(i);
             boolean valid = this.validateNode(c);
-            if (!valid){
-                checkCond(15);
+            if (!valid)
                 return false;
-            }
         }
 
         return true;
     }
 
-
-    private void checkCond(int index){
-        if (!conditions[index]) {
-            conditions[index] = true;
-            System.out.printf("[Condition()] Branch id %d taken%n", index);
-
-        }
-    }
     /**
      * {@inheritDoc}
      */
