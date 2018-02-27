@@ -33,7 +33,6 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
     private int size = 0;
     
     private static boolean[] conditions = new boolean[16];
-
     
     /**
      * Constructor for B-Tree which defaults to a 2-3 B-Tree.
