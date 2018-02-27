@@ -441,9 +441,12 @@ public class SegmentTreeTests {
         SegmentTree.Data.RangeMaximumData<BigInteger> max1 = new SegmentTree.Data.RangeMaximumData<BigInteger>(-5,5,BigInteger.valueOf(3));
         SegmentTree.Data.RangeMaximumData<BigInteger> max2 = new SegmentTree.Data.RangeMaximumData<BigInteger>(-5,5,BigInteger.valueOf(4));
         SegmentTree.Data.RangeMaximumData<BigInteger> shouldBeMax2 = (SegmentTree.Data.RangeMaximumData)max1.combined(max2);
+        //Assert that the value changed
         Assert.assertTrue(shouldBeMax2.maximum.equals(max2.maximum));
+        //Assert that the value did not change
         Assert.assertFalse(shouldBeMax2.maximum.equals(BigInteger.valueOf(3)));
         max2.combined(max1);
+        //Assert that both variables are now the same
         Assert.assertEquals(max1.maximum,max2.maximum);
     }
     @Test
@@ -452,9 +455,12 @@ public class SegmentTreeTests {
         SegmentTree.Data.RangeMaximumData<Long> max1 = new SegmentTree.Data.RangeMaximumData<Long>(-5,5,Long.valueOf(3));
         SegmentTree.Data.RangeMaximumData<Long> max2 = new SegmentTree.Data.RangeMaximumData<Long>(-5,5,Long.valueOf(4));
         SegmentTree.Data.RangeMaximumData<Long> shouldBeMax2 = (SegmentTree.Data.RangeMaximumData)max1.combined(max2);
+        //Assert that the value changed
         Assert.assertEquals(shouldBeMax2.maximum , max2.maximum);
+        //Assert that the value did not change
         Assert.assertFalse(shouldBeMax2.maximum.equals(new Long(3)));
         max2.combined(max1);
+        //Assert that both variables are now the same
         Assert.assertEquals(max1.maximum , max2.maximum);
 
     }
