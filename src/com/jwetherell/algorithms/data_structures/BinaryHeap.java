@@ -47,10 +47,10 @@ public interface BinaryHeap<T extends Comparable<T>> extends IHeap<T> {
     public static class BinaryHeapArray<T extends Comparable<T>> implements BinaryHeap<T> {
 
         private static final int MINIMUM_SIZE = 1024;
-
         private Type type = Type.MIN;
         private int size = 0;
         private T[] array = (T[]) new Comparable[MINIMUM_SIZE];
+        public ArrayList<Integer> heapDownBranchCoverage = new ArrayList<Integer>();
 
         /**
          * Get the parent index of this index, will return Integer.MIN_VALUE if
@@ -186,36 +186,52 @@ public interface BinaryHeap<T extends Comparable<T>> extends IHeap<T> {
         protected void heapDown(int index) {
             T value = this.array[index];
             // initially pi = 0, s = 0
-            if (value==null)  // pi += 1
+            if (value==null)  {// pi += 1
+                heapDownBranchCoverage.add(1);
+              //  System.out.println(heapDownBranchCoverage);
                 return;   // s += 1
+            } else {
+              heapDownBranchCoverage.add(2);
+            }
+
             int leftIndex = getLeftIndex(index);
             int rightIndex = getRightIndex(index);
+            // these 2 branches will not be added to the branchCoverage list.
             T left = (leftIndex != Integer.MIN_VALUE && leftIndex < this.size) ? this.array[leftIndex] : null; // pi += 2
             T right = (rightIndex != Integer.MIN_VALUE && rightIndex < this.size) ? this.array[rightIndex] : null; // pi += 2
 
             if (left == null && right == null) { // pi += 2
+                heapDownBranchCoverage.add(3);
                 // Nothing to do here
+                //System.out.println(heapDownBranchCoverage);
                 return; // s += 1
+            } else {
+              heapDownBranchCoverage.add(4);
             }
 
             T nodeToMove = null;
             int nodeToMoveIndex = -1;
             if ((type == Type.MIN && left != null && right != null && value.compareTo(left) > 0 && value.compareTo(right) > 0) // pi += 5
                 || (type == Type.MAX && left != null && right != null && value.compareTo(left) < 0 && value.compareTo(right) < 0)) { // pi += 5
+                  heapDownBranchCoverage.add(5);
                 // Both children are greater/lesser than node
                 if ((right!=null) && // pi += 1
                     ((type == Type.MIN && (right.compareTo(left) < 0)) || ((type == Type.MAX && right.compareTo(left) > 0))) // pi += 4
                 ) {
+                  heapDownBranchCoverage.add(6);
                     // Right is greater/lesser than left
                     nodeToMove = right;
                     nodeToMoveIndex = rightIndex;
                 } else if ((left!=null) && // pi += 1
                            ((type == Type.MIN && left.compareTo(right) < 0) || (type == Type.MAX && left.compareTo(right) > 0)) // pi += 4
                 ) {
+                  heapDownBranchCoverage.add(7);
                     // Left is greater/lesser than right
                     nodeToMove = left;
                     nodeToMoveIndex = leftIndex;
                 } else {
+                  heapDownBranchCoverage.add(8);
+                  System.out.println(8);
                     // Both children are equal, use right
                     nodeToMove = right;
                     nodeToMoveIndex = rightIndex;
@@ -223,19 +239,28 @@ public interface BinaryHeap<T extends Comparable<T>> extends IHeap<T> {
             } else if ((type == Type.MIN && right != null && value.compareTo(right) > 0) // pi += 3
                        || (type == Type.MAX && right != null && value.compareTo(right) < 0) // pi += 3
             ) {
+              heapDownBranchCoverage.add(9);
                 // Right is greater/lesser than node
                 nodeToMove = right;
                 nodeToMoveIndex = rightIndex;
             } else if ((type == Type.MIN && left != null && value.compareTo(left) > 0) // pi += 3
                        || (type == Type.MAX && left != null && value.compareTo(left) < 0) // pi += 3
             ) {
+              heapDownBranchCoverage.add(10);
                 // Left is greater/lesser than node
                 nodeToMove = left;
                 nodeToMoveIndex = leftIndex;
+            } else {
+              heapDownBranchCoverage.add(11);
             }
             // No node to move, stop recursion
-            if (nodeToMove == null) // pi += 1
+            if (nodeToMove == null) { // pi += 1
+              heapDownBranchCoverage.add(12);
+              //System.out.println(heapDownBranchCoverage);
                 return; // s += 1
+            } else {
+              heapDownBranchCoverage.add(13);
+            }
 
             // Re-factor heap sub-tree
             this.array[nodeToMoveIndex] = value;
