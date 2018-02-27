@@ -435,6 +435,31 @@ public class SegmentTreeTests {
             toString = "\n"+obj.toString();
         Assert.assertTrue(msg+toString, isTrue);
     }
+  
+/*
+ * Testing if 5 is less than 6.
+ * Type: Long.
+*/
+     @Test
+    public void testCombinedRangeMinimumLong(){
+        SegmentTree.Data.RangeMinimumData<Long> stdrmd1 = new SegmentTree.Data.RangeMinimumData<Long>(1, 3, 5L);
+        SegmentTree.Data.RangeMinimumData<Long> stdrmd2 = new SegmentTree.Data.RangeMinimumData<Long>(2, 4, 6L);
+        stdrmd2.combined(stdrmd1);
+        Assert.assertEquals(stdrmd1.minimum, stdrmd2.minimum);
+    }    
+/*
+ * Check if both SegmentTrees mininum value is null.
+ * Type: Integer.
+*/
+    @Test
+    public void testCombineRangeMinimumNull(){
+        SegmentTree.Data.RangeMinimumData<Integer> stdrmd1 = new SegmentTree.Data.RangeMinimumData<Integer>(1, 3, (Integer)null);
+        SegmentTree.Data.RangeMinimumData<Integer> stdrmd2 = new SegmentTree.Data.RangeMinimumData<Integer>(2, 4, (Integer)null);
+        stdrmd2.combined(stdrmd1);
+        Assert.assertNull(stdrmd1.minimum);
+        Assert.assertEquals(stdrmd1.minimum, stdrmd2.minimum);
+
+    }
 
     @Test
     public void testRangeMaximumDataCombined () {
