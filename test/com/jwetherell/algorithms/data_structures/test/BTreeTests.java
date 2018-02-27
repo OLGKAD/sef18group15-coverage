@@ -38,7 +38,7 @@ public class BTreeTests {
     public void validateNodeBtreeTest1(){
         BTree<Integer> bt = new BTree<>(0);
         bt.add(1);
-        assertTrue(!(bt.validate()));
+        assertFalse(bt.validate());
     }
 
 
