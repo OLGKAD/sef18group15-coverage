@@ -433,4 +433,52 @@ public class SegmentTreeTests {
             toString = "\n"+obj.toString();
         Assert.assertTrue(msg+toString, isTrue);
     }
+
+/*
+ * Testing that 13 is less than 59.
+ * Type: Double.
+*/
+     @Test
+    public void testCombinedRangeMinimumDouble(){
+        SegmentTree.Data.RangeMinimumData<Double> stdrmd1 = new SegmentTree.Data.RangeMinimumData<Double>(1, 3, 13D);
+        SegmentTree.Data.RangeMinimumData<Double> stdrmd2 = new SegmentTree.Data.RangeMinimumData<Double>(2, 4, 59D);
+        stdrmd2.combined(stdrmd1);
+        Assert.assertEquals(stdrmd1.minimum, stdrmd2.minimum);
+    } 
+
+/*
+ * Testing that 4 is less than 13 when the bigger number comes first.
+ * Type: Double.
+*/
+     @Test
+    public void testCombinedRangeMinimumDoubleSwapped(){
+        SegmentTree.Data.RangeMinimumData<Double> stdrmd1 = new SegmentTree.Data.RangeMinimumData<Double>(1, 3, 13D);
+        SegmentTree.Data.RangeMinimumData<Double> stdrmd2 = new SegmentTree.Data.RangeMinimumData<Double>(2, 4, 4D);
+        stdrmd2.combined(stdrmd1);
+        Assert.assertEquals(4D, stdrmd2.minimum);
+    } 
+
+    /*
+ * Testing if 359 is less than 1002.
+ * Type: Float.
+*/
+     @Test
+    public void testCombinedRangeMinimumFloat(){
+        SegmentTree.Data.RangeMinimumData<Float> stdrmd1 = new SegmentTree.Data.RangeMinimumData<Float>(1, 3, 359F);
+        SegmentTree.Data.RangeMinimumData<Float> stdrmd2 = new SegmentTree.Data.RangeMinimumData<Float>(2, 4, 1002F);
+        stdrmd2.combined(stdrmd1);
+        Assert.assertEquals(stdrmd1.minimum, stdrmd2.minimum);
+    } 
+
+/*
+ * Testing if 44 is less than 359.
+ * Type: Float.
+*/
+     @Test
+    public void testCombinedRangeMinimumFloatSwapped(){
+        SegmentTree.Data.RangeMinimumData<Float> stdrmd1 = new SegmentTree.Data.RangeMinimumData<Float>(1, 3, 359F);
+        SegmentTree.Data.RangeMinimumData<Float> stdrmd2 = new SegmentTree.Data.RangeMinimumData<Float>(2, 4, 44F);
+        stdrmd2.combined(stdrmd1);
+        Assert.assertEquals(44F, stdrmd2.minimum);
+    } 
 }
