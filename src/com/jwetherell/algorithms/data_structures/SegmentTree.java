@@ -3,6 +3,7 @@ package com.jwetherell.algorithms.data_structures;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.security.InvalidParameterException;
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -11,6 +12,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+
+import java.lang.Number;
 
 /**
  * Segment tree using objects and pointers. A segment tree is a tree data
@@ -332,7 +335,7 @@ public abstract class SegmentTree<D extends SegmentTree.Data> {
                 return this;
             }
 
-            private void combined(RangeMaximumData<N> data) {
+            private <T extends Number & Comparable<T>> void combined(RangeMaximumData<N> data) {
                 if (this.maximum == null && data.maximum == null)
                     return;
                 else if (this.maximum != null && data.maximum == null)
@@ -340,27 +343,13 @@ public abstract class SegmentTree<D extends SegmentTree.Data> {
                 else if (this.maximum == null && data.maximum != null)
                     this.maximum = data.maximum;
                 else {
-                    /* TODO: This is ugly */
-                    if (this.maximum instanceof BigDecimal || data.maximum instanceof BigDecimal) {
-                        if (((BigDecimal)data.maximum).compareTo(((BigDecimal)this.maximum))==1)
-                            this.maximum = data.maximum;
-                    } else if (this.maximum instanceof BigInteger || data.maximum instanceof BigInteger) {
-                        if (((BigInteger)data.maximum).compareTo(((BigInteger)this.maximum))==1)
-                            this.maximum = data.maximum;
-                    } else if (this.maximum instanceof Long || data.maximum instanceof Long) {
-                        if (((Long)data.maximum).compareTo(((Long)this.maximum))==1)
-                            this.maximum = data.maximum;
-                    } else if (this.maximum instanceof Double || data.maximum instanceof Double) {
-                        if (((Double)data.maximum).compareTo(((Double)this.maximum))==1)
-                            this.maximum = data.maximum;
-                    } else if (this.maximum instanceof Float || data.maximum instanceof Float) {
-                        if (((Float)data.maximum).compareTo(((Float)this.maximum))==1)
-                            this.maximum = data.maximum;
-                    } else {
-                        // Integer
-                        if (((Integer)data.maximum).compareTo(((Integer)this.maximum))==1)
-                            this.maximum = data.maximum;
-                    }
+                    // The type of data.maximum has to extend and implement
+                    // the required classes/interfaces. This does include the normal
+                    // BigDecimal, BigInteger, etc..
+                    Class T = data.maximum.getClass();
+                    T dataMax = (T) data.maximum;
+                    T thisMax = (T) this.maximum;
+                    if (dataMax.compareTo(thisMax) == 1) this.maximum = data.maximum;
                 }
             }
 
