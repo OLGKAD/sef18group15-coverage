@@ -314,12 +314,18 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
         return node;
     }
 
-    private static boolean[] combinedConds = new boolean[16];
-
+    private static boolean[] combinedConds = new boolean[23];
+    private static boolean done = false;
     private void checkCond (int index) {
+        if (done) return;
         if (!combinedConds[index]) {
             combinedConds[index] = true;
-            System.out.printf("[combined()] Branch id %d taken%n", index);
+            System.out.printf("[BTree::combined] Branch id %d was taken%n", index);
+            for (boolean b : combinedConds) {
+                if (!b) return;
+            }
+            done = true;
+            System.out.println("[BTree::combined] All branches taken");
         }
     }
 
@@ -357,19 +363,23 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
             if (rightNeighbor.numberOfChildren() > 0) {
                 checkCond(2);
                 node.addChild(rightNeighbor.removeChild(0));
+            } else {
+                checkCond(3);
             }
         } else {
-            checkCond(3);
+            checkCond(4);
             Node<T> leftNeighbor = null;
             int leftNeighborSize = -minChildrenSize;
             if (indexOfLeftNeighbor >= 0) {
-                checkCond(4);
+                checkCond(5);
                 leftNeighbor = parent.getChild(indexOfLeftNeighbor);
                 leftNeighborSize = leftNeighbor.numberOfKeys();
+            } else {
+                checkCond(6);
             }
 
             if (leftNeighbor != null && leftNeighborSize > minKeySize) {
-                checkCond(5);
+                checkCond(7);
                 // Try to borrow from left neighbor
                 T removeValue = leftNeighbor.getKey(leftNeighbor.numberOfKeys() - 1);
                 int prev = getIndexOfNextValue(parent, removeValue);
@@ -378,11 +388,13 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
                 node.addKey(parentValue);
                 parent.addKey(neighborValue);
                 if (leftNeighbor.numberOfChildren() > 0) {
-                    checkCond(6);
+                    checkCond(8);
                     node.addChild(leftNeighbor.removeChild(leftNeighbor.numberOfChildren() - 1));
+                } else {
+                    checkCond(9);
                 }
             } else if (rightNeighbor != null && parent.numberOfKeys() > 0) {
-                checkCond(7);
+                checkCond(10);
                 // Can't borrow from neighbors, try to combined with right neighbor
                 T removeValue = rightNeighbor.getKey(0);
                 int prev = getIndexOfPreviousValue(parent, removeValue);
@@ -390,29 +402,31 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
                 parent.removeChild(rightNeighbor);
                 node.addKey(parentValue);
                 for (int i = 0; i < rightNeighbor.keysSize; i++) {
-                    checkCond(7);
+                    checkCond(11);
                     T v = rightNeighbor.getKey(i);
                     node.addKey(v);
                 }
                 for (int i = 0; i < rightNeighbor.childrenSize; i++) {
-                    checkCond(8);
+                    checkCond(12);
                     Node<T> c = rightNeighbor.getChild(i);
                     node.addChild(c);
                 }
 
                 if (parent.parent != null && parent.numberOfKeys() < minKeySize) {
-                    checkCond(9);
+                    checkCond(13);
                     // removing key made parent too small, combined up tree
                     this.combined(parent);
                 } else if (parent.numberOfKeys() == 0) {
-                    checkCond(10);
+                    checkCond(14);
                     // parent no longer has keys, make this node the new root
                     // which decreases the height of the tree
                     node.parent = null;
                     root = node;
+                } else {
+                    checkCond(15);
                 }
             } else if (leftNeighbor != null && parent.numberOfKeys() > 0) {
-                checkCond(11);
+                checkCond(16);
                 // Can't borrow from neighbors, try to combined with left neighbor
                 T removeValue = leftNeighbor.getKey(leftNeighbor.numberOfKeys() - 1);
                 int prev = getIndexOfNextValue(parent, removeValue);
@@ -420,27 +434,31 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
                 parent.removeChild(leftNeighbor);
                 node.addKey(parentValue);
                 for (int i = 0; i < leftNeighbor.keysSize; i++) {
-                    checkCond(12);
+                    checkCond(17);
                     T v = leftNeighbor.getKey(i);
                     node.addKey(v);
                 }
                 for (int i = 0; i < leftNeighbor.childrenSize; i++) {
-                    checkCond(13);
+                    checkCond(18);
                     Node<T> c = leftNeighbor.getChild(i);
                     node.addChild(c);
                 }
 
                 if (parent.parent != null && parent.numberOfKeys() < minKeySize) {
-                    checkCond(14);
+                    checkCond(19);
                     // removing key made parent too small, combined up tree
                     this.combined(parent);
                 } else if (parent.numberOfKeys() == 0) {
-                    checkCond(15);
+                    checkCond(20);
                     // parent no longer has keys, make this node the new root
                     // which decreases the height of the tree
                     node.parent = null;
                     root = node;
+                } else {
+                    checkCond(21);
                 }
+            } else {
+                checkCond(22);
             }
         }
 
