@@ -332,34 +332,86 @@ public abstract class SegmentTree<D extends SegmentTree.Data> {
                 return this;
             }
 
+            private static boolean[] combinedConds = new boolean[22];
+            private static boolean done = false;
+            private void checkCond (int index) {
+                if (done) return;
+                if (!combinedConds[index]) {
+                    combinedConds[index] = true;
+                    System.out.printf("[RangeMaximumData::combined] Branch id %d was taken%n", index);
+                    for (boolean b : combinedConds) {
+                        if (!b) return;
+                    }
+                    done = true;
+                    System.out.println("[RangeMaximumData::combined] All branches taken");
+                }
+            }
+
             private void combined(RangeMaximumData<N> data) {
-                if (this.maximum == null && data.maximum == null)
+                if (this.maximum == null && data.maximum == null){
+                    checkCond(0);
                     return;
-                else if (this.maximum != null && data.maximum == null)
+                }
+                else if (this.maximum != null && data.maximum == null){
+                    checkCond(1);
                     return;
-                else if (this.maximum == null && data.maximum != null)
+                }
+                else if (this.maximum == null && data.maximum != null){
+                    checkCond(2);
                     this.maximum = data.maximum;
+                }
                 else {
+                    checkCond(3);
                     /* TODO: This is ugly */
                     if (this.maximum instanceof BigDecimal || data.maximum instanceof BigDecimal) {
-                        if (((BigDecimal)data.maximum).compareTo(((BigDecimal)this.maximum))==1)
+                        checkCond(4);
+                        if (((BigDecimal)data.maximum).compareTo(((BigDecimal)this.maximum))==1) {
+                            checkCond(5);
                             this.maximum = data.maximum;
+                        } else {
+                            checkCond(6);
+                        }
                     } else if (this.maximum instanceof BigInteger || data.maximum instanceof BigInteger) {
-                        if (((BigInteger)data.maximum).compareTo(((BigInteger)this.maximum))==1)
+                        checkCond(7);
+                        if (((BigInteger)data.maximum).compareTo(((BigInteger)this.maximum))==1) {
+                            checkCond(8);
                             this.maximum = data.maximum;
+                        } else {
+                            checkCond(9);
+                        }
                     } else if (this.maximum instanceof Long || data.maximum instanceof Long) {
-                        if (((Long)data.maximum).compareTo(((Long)this.maximum))==1)
+                        checkCond(10);
+                        if (((Long)data.maximum).compareTo(((Long)this.maximum))==1) {
+                            checkCond(11);
                             this.maximum = data.maximum;
+                        } else {
+                            checkCond(12);
+                        }
                     } else if (this.maximum instanceof Double || data.maximum instanceof Double) {
-                        if (((Double)data.maximum).compareTo(((Double)this.maximum))==1)
+                        checkCond(13);
+                        if (((Double)data.maximum).compareTo(((Double)this.maximum))==1) {
+                            checkCond(14);
                             this.maximum = data.maximum;
+                        } else {
+                            checkCond(15);
+                        }
                     } else if (this.maximum instanceof Float || data.maximum instanceof Float) {
-                        if (((Float)data.maximum).compareTo(((Float)this.maximum))==1)
+                        checkCond(16);
+                        if (((Float)data.maximum).compareTo(((Float)this.maximum))==1) {
+                            checkCond(17);
                             this.maximum = data.maximum;
+                        } else {
+                            checkCond(18);
+                        }
                     } else {
+                        checkCond(19);
                         // Integer
-                        if (((Integer)data.maximum).compareTo(((Integer)this.maximum))==1)
+                        if (((Integer)data.maximum).compareTo(((Integer)this.maximum))==1) {
+                            checkCond(20);
                             this.maximum = data.maximum;
+                        } else {
+                            checkCond(21);
+                        }
                     }
                 }
             }
