@@ -34,7 +34,7 @@ public abstract class SegmentTree<D extends SegmentTree.Data> {
 
     /**
      * Stabbing query
-     * 
+     *
      * @param index
      *            index to query
      * @return data at index.
@@ -43,7 +43,7 @@ public abstract class SegmentTree<D extends SegmentTree.Data> {
 
     /**
      * Range query
-     * 
+     *
      * @param start
      *            start of range (inclusive)
      * @param end
@@ -69,7 +69,7 @@ public abstract class SegmentTree<D extends SegmentTree.Data> {
 
         /**
          * Constructor for data at index
-         * 
+         *
          * @param index
          *            of data.
          */
@@ -80,7 +80,7 @@ public abstract class SegmentTree<D extends SegmentTree.Data> {
 
         /**
          * Constructor for data at range (inclusive)
-         * 
+         *
          * @param start
          *            start of range for data.
          * @param end
@@ -101,7 +101,7 @@ public abstract class SegmentTree<D extends SegmentTree.Data> {
 
         /**
          * Combined this data with the Data parameter
-         * 
+         *
          * @param data
          *            Data to combined
          * @return Data which represents the combination.
@@ -110,14 +110,14 @@ public abstract class SegmentTree<D extends SegmentTree.Data> {
 
         /**
          * Deep copy of data.
-         * 
+         *
          * @return deep copy.
          */
         public abstract Data copy();
 
         /**
          * Query inside this data object.
-         * 
+         *
          * @param startOfRange
          *            start of range (inclusive)
          * @param endOfRange
@@ -245,7 +245,7 @@ public abstract class SegmentTree<D extends SegmentTree.Data> {
                     return false;
                 QuadrantData data = (QuadrantData) obj;
                 if (this.start == data.start && this.end == data.end && this.quad0 == data.quad0
-                    && this.quad1 == data.quad1 && this.quad2 == data.quad2 && this.quad3 == data.quad3) 
+                    && this.quad1 == data.quad1 && this.quad2 == data.quad2 && this.quad3 == data.quad3)
                 {
                     return true;
                 }
@@ -510,7 +510,7 @@ public abstract class SegmentTree<D extends SegmentTree.Data> {
             public boolean equals(Object obj) {
                 if (!(obj instanceof RangeMinimumData))
                     return false;
- 
+
                 final RangeMinimumData<N> data = (RangeMinimumData<N>) obj;
                 if (this.start == data.start && this.end == data.end && this.minimum.equals(data.minimum))
                     return true;
@@ -671,7 +671,7 @@ public abstract class SegmentTree<D extends SegmentTree.Data> {
 
             /**
              * Interval data using O as it's unique identifier
-             * 
+             *
              * @param object
              *            Object which defines the interval data
              */
@@ -683,7 +683,7 @@ public abstract class SegmentTree<D extends SegmentTree.Data> {
 
             /**
              * Interval data using O as it's unique identifier
-             * 
+             *
              * @param object
              *            Object which defines the interval data
              */
@@ -695,7 +695,7 @@ public abstract class SegmentTree<D extends SegmentTree.Data> {
 
             /**
              * Interval data list which should all be unique
-             * 
+             *
              * @param set
              *            of interval data objects
              */
@@ -707,7 +707,7 @@ public abstract class SegmentTree<D extends SegmentTree.Data> {
 
             /**
              * Get the data set in this interval
-             * 
+             *
              * @return Unmodifiable collection of data objects
              */
             public Collection<O> getData() {
@@ -760,7 +760,7 @@ public abstract class SegmentTree<D extends SegmentTree.Data> {
 
             /**
              * Combined for interval specific data.
-             * 
+             *
              * @param data
              *            resulted from combination.
              */
@@ -833,7 +833,7 @@ public abstract class SegmentTree<D extends SegmentTree.Data> {
 
         /**
          * Query for data in range.
-         * 
+         *
          * @param startOfQuery
          *            of the range to query for.
          * @param endOfQuery
@@ -1049,7 +1049,7 @@ public abstract class SegmentTree<D extends SegmentTree.Data> {
                             // Need to split across middle
                             final NonOverlappingSegment<D> ss1 = new NonOverlappingSegment<D>(minLength, s.start, middle - 1, s.data);
                             s1.add(ss1);
- 
+
                             final NonOverlappingSegment<D> ss2 = new NonOverlappingSegment<D>(minLength, middle, s.end, s.data);
                             s2.add(ss2);
                         }
@@ -1087,23 +1087,18 @@ public abstract class SegmentTree<D extends SegmentTree.Data> {
                         if (this.set.size() == 0)
                             return dataToReturn;
                         for (Segment<D> s : this.set) {
-                            if (s.start >= startOfQuery && s.end <= endOfQuery) {
-                                if (dataToReturn == null)
-                                    dataToReturn = (D) s.data.query(startOfQuery, endOfQuery);
-                                else
-                                    dataToReturn.combined(s.data);
-                            } else if (s.start <= startOfQuery && s.end >= endOfQuery) {
-                                if (dataToReturn == null)
-                                    dataToReturn = (D) s.data.query(startOfQuery, endOfQuery);
-                                else
-                                    dataToReturn.combined(s.data);
-                            }
+                          ///////// this and the next branch seem to be doing the same thing. So, why have them both?
+                          //// CC will be reduced by 5
+                            if (dataToReturn == null)
+                                dataToReturn = (D) s.data.query(startOfQuery, endOfQuery);
+                            else
+                                dataToReturn.combined(s.data);
                         }
                         return dataToReturn;
                     }
-                } 
-
-                if (this.hasChildren()) {
+                } else {
+                // actually the same branch as the else-clause above. Uniting them DOES reduce the CC by 1.
+                //if (this.hasChildren()) {
                     if (startOfQuery <= this.getLeftChild().end && endOfQuery > this.getLeftChild().end) {
                         final Data q1 = this.getLeftChild().query(startOfQuery, getLeftChild().end);
                         final Data q2 = this.getRightChild().query(getRightChild().start, endOfQuery);
@@ -1113,9 +1108,12 @@ public abstract class SegmentTree<D extends SegmentTree.Data> {
                             return (D) q1;
                         if (q1 == null && q2 != null)
                             return (D) q2;
-                        if (q1 != null && q2 != null) 
+                        // could be covered by 'else' clause instead, reducing CC by 2
+                        else
                             return ((D) q1.combined(q2));
-                    } else if (startOfQuery <= this.getLeftChild().end && endOfQuery <= this.getLeftChild().end) {
+                    // below in combination with the 'if' clause above is equivalent to itself with the 2nd part of the if-clause (after &&) removed
+                    // this reduces CC by 1
+                    } else if (startOfQuery <= this.getLeftChild().end) {
                         return this.getLeftChild().query(startOfQuery, endOfQuery);
                     }
                     return this.getRightChild().query(startOfQuery, endOfQuery);
