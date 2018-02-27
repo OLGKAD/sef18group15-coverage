@@ -337,18 +337,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
         }
         return replacement;
     }
-
-    /**
-     * Replace nodeToRemoved with replacementNode in the tree.
-     * 
-     * @param nodeToRemoved
-     *            Node<T> to remove replace in the tree. nodeToRemoved should
-     *            NOT be NULL.
-     * @param replacementNode
-     *            Node<T> to replace nodeToRemoved in the tree. replacementNode
-     *            can be NULL.
-     */
-    protected void replaceNodeWithNode(Node<T> nodeToRemoved, Node<T> replacementNode) {
+    private void replaceNodeHelper(Node<T> nodeToRemoved, Node<T> replacementNode){
         if (replacementNode != null) {
             // Save for later
             Node<T> replacementNodeLesser = replacementNode.lesser;
@@ -382,7 +371,20 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
                 }
             }
         }
+    }
+    /**
+     * Replace nodeToRemoved with replacementNode in the tree.
+     * 
+     * @param nodeToRemoved
+     *            Node<T> to remove replace in the tree. nodeToRemoved should
+     *            NOT be NULL.
+     * @param replacementNode
+     *            Node<T> to replace nodeToRemoved in the tree. replacementNode
+     *            can be NULL.
+     */
+    protected void replaceNodeWithNode(Node<T> nodeToRemoved, Node<T> replacementNode) {
 
+        replaceNodeHelper(nodeToRemoved,replacementNode);
         // Update the link in the tree from the nodeToRemoved to the
         // replacementNode
         Node<T> parent = nodeToRemoved.parent;
