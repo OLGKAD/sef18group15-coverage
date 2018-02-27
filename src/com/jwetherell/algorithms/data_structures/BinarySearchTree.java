@@ -338,6 +338,26 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
         return replacement;
     }
 
+
+    public static boolean[] pathTakenReplaceNodeWithNode = new boolean[25];
+    public static boolean allPathsTakenRNWN = false;
+    private void checkPathTakenRNWN(int index){
+        if(!allPathsTakenRNWN){
+            if(!pathTakenReplaceNodeWithNode[index]){
+                pathTakenReplaceNodeWithNode[index] = true;
+                System.out.println("replaceNodeWithNode, "+index);
+                for (boolean path: pathTakenReplaceNodeWithNode) {
+                   if(!path){
+                        return;
+                   } 
+                }
+                allPathsTakenRNWN = true;
+                System.out.println("replaceNodeWithNode, all branches covered");
+            }
+        }
+    }
+
+
     /**
      * Replace nodeToRemoved with replacementNode in the tree.
      *
@@ -350,6 +370,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
      */
     protected void replaceNodeWithNode(Node<T> nodeToRemoved, Node<T> replacementNode) {
         if (replacementNode != null) {
+            checkPathTakenRNWN(0);
             // Save for later
             Node<T> replacementNodeLesser = replacementNode.lesser;
             Node<T> replacementNodeGreater = replacementNode.greater;
@@ -357,48 +378,98 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
             // Replace replacementNode's branches with nodeToRemove's branches
             Node<T> nodeToRemoveLesser = nodeToRemoved.lesser;
             if (nodeToRemoveLesser != null && nodeToRemoveLesser != replacementNode) {
+                checkPathTakenRNWN(1);
                 replacementNode.lesser = nodeToRemoveLesser;
                 nodeToRemoveLesser.parent = replacementNode;
             }
+            else{
+            checkPathTakenRNWN(2);
+            }
             Node<T> nodeToRemoveGreater = nodeToRemoved.greater;
             if (nodeToRemoveGreater != null && nodeToRemoveGreater != replacementNode) {
+                checkPathTakenRNWN(3);
                 replacementNode.greater = nodeToRemoveGreater;
                 nodeToRemoveGreater.parent = replacementNode;
+            }
+            else{
+                checkPathTakenRNWN(4);
             }
 
             // Remove link from replacementNode's parent to replacement
             Node<T> replacementParent = replacementNode.parent;
             if (replacementParent != null && replacementParent != nodeToRemoved) {
+                checkPathTakenRNWN(5);
                 Node<T> replacementParentLesser = replacementParent.lesser;
                 Node<T> replacementParentGreater = replacementParent.greater;
                 if (replacementParentLesser != null && replacementParentLesser == replacementNode) {
+                    checkPathTakenRNWN(6);
                     replacementParent.lesser = replacementNodeGreater;
-                    if (replacementNodeGreater != null)
+                    if (replacementNodeGreater != null){
                         replacementNodeGreater.parent = replacementParent;
+                        checkPathTakenRNWN(7);
+                    }
+                    else{
+                        checkPathTakenRNWN(8);
+                    }
                 } else if (replacementParentGreater != null && replacementParentGreater == replacementNode) {
+                    checkPathTakenRNWN(9);
                     replacementParent.greater = replacementNodeLesser;
-                    if (replacementNodeLesser != null)
+                    if (replacementNodeLesser != null){
+                        checkPathTakenRNWN(10);
                         replacementNodeLesser.parent = replacementParent;
+                    }
+                    else{
+                        checkPathTakenRNWN(11);
+                        }
                 }
+                else{
+                    checkPathTakenRNWN(12);
+                }
+            }else{
+                checkPathTakenRNWN(13);
             }
+        }
+        else{
+            checkPathTakenRNWN(14);
         }
 
         // Update the link in the tree from the nodeToRemoved to the
         // replacementNode
         Node<T> parent = nodeToRemoved.parent;
         if (parent == null) {
+            checkPathTakenRNWN(15);
             // Replacing the root node
             root = replacementNode;
-            if (root != null)
+            if (root != null){
+                checkPathTakenRNWN(16);
                 root.parent = null;
+            }
+            else{
+                checkPathTakenRNWN(17);
+            }
         } else if (parent.lesser != null && (parent.lesser.id.compareTo(nodeToRemoved.id) == 0)) {
+            checkPathTakenRNWN(18);
             parent.lesser = replacementNode;
-            if (replacementNode != null)
+            if (replacementNode != null){
+                checkPathTakenRNWN(19);
                 replacementNode.parent = parent;
+            }else{
+                checkPathTakenRNWN(20);
+            }
         } else if (parent.greater != null && (parent.greater.id.compareTo(nodeToRemoved.id) == 0)) {
+            checkPathTakenRNWN(21);
             parent.greater = replacementNode;
-            if (replacementNode != null)
+            if (replacementNode != null){
+                checkPathTakenRNWN(22);
                 replacementNode.parent = parent;
+            }else{
+                checkPathTakenRNWN(23);
+            }
+            
+        }
+        else{
+            System.out.println("derp");
+            checkPathTakenRNWN(24);
         }
         size--;
     }
@@ -514,6 +585,24 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
         return getDFS(order, this.root, this.size);
     }
 
+    public static boolean[] pathTakenGetDFS = new boolean[26];
+    public static boolean allPathsTakenGetDFS = false;
+    private static void checkPathTakenGetDFS(int index){
+        if(!allPathsTakenGetDFS){
+            if(!pathTakenGetDFS[index]){
+                pathTakenGetDFS[index] = true;
+                System.out.println("getDFS, "+index);
+                for (boolean path: pathTakenGetDFS) {
+                   if(!path){
+                        return;
+                   } 
+                }
+                allPathsTakenRNWN = true;
+                System.out.println("getDFS, all branches covered");
+            }
+        }
+    }
+
     /**
      * Get an array representation of the tree in-order.
      *
@@ -529,87 +618,87 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
         int index = 0;
         Node<T> node = start;
         while (index < size && node != null) {
-        //    System.out.println("1");
+            checkPathTakenGetDFS(0);
             Node<T> parent = node.parent;
             Node<T> lesser = (node.lesser != null && !added.contains(node.lesser)) ? node.lesser : null;
             Node<T> greater = (node.greater != null && !added.contains(node.greater)) ? node.greater : null;
-
             if (parent == null && lesser == null && greater == null) {
-                //System.out.println("2");
+                checkPathTakenGetDFS(1);
+
                 if (!added.contains(node)){
+                    checkPathTakenGetDFS(2);
                     nodes[index++] = node.id;
-                    //System.out.println("4");
                 }else{
-                    System.out.println("5");
+                    checkPathTakenGetDFS(3);
                 }
                 break;
             }
             else{
-             //   System.out.println("6");
+                checkPathTakenGetDFS(4);
             }
 
             if (order == DepthFirstSearchOrder.inOrder) {
-                //System.out.println("7");
+                checkPathTakenGetDFS(5);
                 if (lesser != null) {
-                    //System.out.println("8");
+                    checkPathTakenGetDFS(6);
                     node = lesser;
                 } else {
-                    //System.out.println("9");
+                    checkPathTakenGetDFS(7);
                     if (!added.contains(node)) {
-                        //System.out.println("10");
+                        checkPathTakenGetDFS(8);
                         nodes[index++] = node.id;
                         added.add(node);
                     }else{
-                       //System.out.println("11");
+                        checkPathTakenGetDFS(9);
                     }
                     if (greater != null) {
-                        //System.out.println("12");
+                        checkPathTakenGetDFS(10);
                         node = greater;
                     } else if (added.contains(node)) {
-                        //System.out.println("13");
+                        checkPathTakenGetDFS(11);
                         node = parent;
                     } else {
-                        System.out.println("14");
+                        checkPathTakenGetDFS(12);
                         // We should not get here. Stop the loop!
                         node = null;
                     }
                 }
             } else if (order == DepthFirstSearchOrder.preOrder) {
-               // System.out.println("15");
+                checkPathTakenGetDFS(13);
                 if (!added.contains(node)) {
-                 //   System.out.println("16");
+                    checkPathTakenGetDFS(14);
                     nodes[index++] = node.id;
                     added.add(node);
                 }else{
-                   // System.out.println("17");
+                    checkPathTakenGetDFS(15);
                 }
                 if (lesser != null) {
-                    //System.out.println("18");
+                    checkPathTakenGetDFS(16);
                     node = lesser;
                 } else if (greater != null) {
-                    //System.out.println("19");
+                    checkPathTakenGetDFS(17);
                     node = greater;
                 } else if (added.contains(node)) {
-                    //System.out.println("20");
+                    checkPathTakenGetDFS(18);
                     node = parent;
                 } else {
-                    System.out.println("21");
+                    checkPathTakenGetDFS(19);
                     // We should not get here. Stop the loop!
                     node = null;
                 }
             } else {
-               // System.out.println("22");
+                checkPathTakenGetDFS(20);
                 // post-Order
                 if (lesser != null) {
-                 //   System.out.println("23");
+                    checkPathTakenGetDFS(21);
                     node = lesser;
                 } else {
-                   // System.out.println("24");
+                    checkPathTakenGetDFS(22);
                     if (greater != null) {
-                     //   System.out.println("25");
+                        checkPathTakenGetDFS(23);
                         node = greater;
                     } else {
-                       // System.out.println("26");
+                        checkPathTakenGetDFS(24);
                         // lesser==null && greater==null
                         nodes[index++] = node.id;
                         added.add(node);
@@ -618,7 +707,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
                 }
             }
         }
-        //System.out.println("27");
+        checkPathTakenGetDFS(25);
         return nodes;
     }
 
