@@ -7,6 +7,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import java.math.BigDecimal;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -435,7 +437,33 @@ public class SegmentTreeTests {
     }
 
     @Test
-    public void testSeg () {
+    public void testRangeMaximumDataCombined () {
+        BigDecimal oldRmax1 = new BigDecimal(8);
+        SegmentTree.Data.RangeMaximumData<BigDecimal> rmax1 = 
+            new SegmentTree.Data.RangeMaximumData<BigDecimal>(2, 4, oldRmax1);
+
+        SegmentTree.Data.RangeMaximumData<BigDecimal> rmax2 = 
+            new SegmentTree.Data.RangeMaximumData<BigDecimal>(1, 3, new BigDecimal(9));
+
+        rmax1.combined(rmax2);
+
+        /**
+         * rmax1.maximum < rmax2.maximum so rmax1.maximum should take the value 
+         * of rmax2.maximum and not the old one.
+         */
+        Assert.assertEquals(rmax1.maximum, rmax2.maximum);
+        Assert.assertFalse(rmax1.maximum.equals(oldRmax1));
+
+        /**
+         * A repeated call should not fulfill the inequality rmax1.maximum < rmax2.maximum
+         * and the two should have an equal maximum.
+         */
+        rmax1.combined(rmax2);
+        Assert.assertEquals(rmax1.maximum, rmax2.maximum);
+    }
+  
+    @Test
+    public void testRangeMaximumDataCombinedNullCheck () {
         // The following warnings should go unchecked to check a case
         // where rmax1.combined(rmin2) should reach a branch where
         // both maximum (respectively) are null.
@@ -453,6 +481,8 @@ public class SegmentTreeTests {
         @SuppressWarnings("unchecked")
         SegmentTree.Data.RangeMaximumData<Integer> res =
             (SegmentTree.Data.RangeMaximumData)rmax1.combined(rmax2);
+        
+        // Check that the references are the same
         Assert.assertTrue(rmax1 == res);
     }
 }
