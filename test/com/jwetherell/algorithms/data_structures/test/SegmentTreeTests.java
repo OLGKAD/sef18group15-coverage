@@ -451,6 +451,7 @@ public class SegmentTreeTests {
     }
     @Test
     public void testCombinedLong(){
+        
         //Test that both branches are reached when Long is used as number representation
         SegmentTree.Data.RangeMaximumData<Long> max1 = new SegmentTree.Data.RangeMaximumData<Long>(-5,5,Long.valueOf(3));
         SegmentTree.Data.RangeMaximumData<Long> max2 = new SegmentTree.Data.RangeMaximumData<Long>(-5,5,Long.valueOf(4));
