@@ -1,8 +1,6 @@
 package com.jwetherell.algorithms.data_structures.test;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
@@ -52,5 +50,25 @@ public class HashMapTests {
         HashMap<Integer,String> map2 = new HashMap<Integer,String>(HashMap.Type.CHAINING,2);
         assertNotNull(map);
         assertNotNull(map2);
+
+    @Test
+    public void testClearMethod () {
+        /**
+         * Clearing an empty map should result in a size of 0.
+         * After inserting one item, the new size should be 0 when cleared.
+         */
+        HashMap<Integer, Integer> map1 = new HashMap<>(HashMap.Type.CHAINING);
+        assertEquals(0, map1.size());
+        map1.put(2, 3);
+        assertEquals(1, map1.size());
+        map1.clear();
+        assertEquals(0, map1.size());
+
+        HashMap<Integer, Integer> map2 = new HashMap<>(HashMap.Type.PROBING);
+        assertEquals(0, map2.size());
+        map2.put(3, 2);
+        assertEquals(1, map2.size());
+        map2.clear();
+        assertEquals(0, map2.size());
     }
 }
