@@ -463,7 +463,7 @@ public abstract class SegmentTree<D extends SegmentTree.Data> {
             private void checkCond (int index) {
                 if (!combinedConds[index]) {
                     combinedConds[index] = true;
-                    System.out.printf("[combined()] Branch id %d taken%n", index);
+                    System.out.printf("[RangeMinimumData::combined()] Branch id %d taken%n", index);
                 }
             }
 

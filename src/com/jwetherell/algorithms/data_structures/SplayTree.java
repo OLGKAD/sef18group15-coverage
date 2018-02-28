@@ -270,7 +270,7 @@ public class SplayTree<T extends Comparable<T>> extends BinarySearchTree<T> {
     private void checkCond (int index) {
         if (!combinedConds[index]) {
             combinedConds[index] = true;
-            System.out.printf("[combined()] Branch id %d taken%n", index);
+            System.out.printf("[SplayTree::splay()] Branch id %d taken%n", index);
         }
     }
 

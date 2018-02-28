@@ -170,7 +170,7 @@ public class IntervalTree<O extends Object> {
         private void checkCond(int index){
             if(!conditions[index]){
                 conditions[index] = true;
-                System.out.printf("[Condition()] Branch id %d taken%n", index);
+                System.out.printf("[IntervalTree::query()] Branch id %d taken%n", index);
             }            
 
         }

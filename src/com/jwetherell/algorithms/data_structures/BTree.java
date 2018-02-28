@@ -30,7 +30,7 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
 
     private Node<T> root = null;
     private int size = 0;
-    private static boolean[] conditions = new boolean[24];
+    private static boolean[] conditions = new boolean[31];
 
     /**
      * Constructor for B-Tree which defaults to a 2-3 B-Tree.
@@ -317,7 +317,7 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
 
     private static boolean[] combinedConds = new boolean[23];
     private static boolean done = false;
-    private void checkCond (int index) {
+    private void checkCondCombined (int index) {
         if (done) return;
         if (!combinedConds[index]) {
             combinedConds[index] = true;
@@ -346,14 +346,14 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
         Node<T> rightNeighbor = null;
         int rightNeighborSize = -minChildrenSize;
         if (indexOfRightNeighbor < parent.numberOfChildren()) {
-            checkCond(0);
+            checkCondCombined(0);
             rightNeighbor = parent.getChild(indexOfRightNeighbor);
             rightNeighborSize = rightNeighbor.numberOfKeys();
         }
 
         // Try to borrow neighbor
         if (rightNeighbor != null && rightNeighborSize > minKeySize) {
-            checkCond(1);
+            checkCondCombined(1);
             // Try to borrow from right neighbor
             T removeValue = rightNeighbor.getKey(0);
             int prev = getIndexOfPreviousValue(parent, removeValue);
@@ -362,25 +362,25 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
             node.addKey(parentValue);
             parent.addKey(neighborValue);
             if (rightNeighbor.numberOfChildren() > 0) {
-                checkCond(2);
+                checkCondCombined(2);
                 node.addChild(rightNeighbor.removeChild(0));
             } else {
-                checkCond(3);
+                checkCondCombined(3);
             }
         } else {
-            checkCond(4);
+            checkCondCombined(4);
             Node<T> leftNeighbor = null;
             int leftNeighborSize = -minChildrenSize;
             if (indexOfLeftNeighbor >= 0) {
-                checkCond(5);
+                checkCondCombined(5);
                 leftNeighbor = parent.getChild(indexOfLeftNeighbor);
                 leftNeighborSize = leftNeighbor.numberOfKeys();
             } else {
-                checkCond(6);
+                checkCondCombined(6);
             }
 
             if (leftNeighbor != null && leftNeighborSize > minKeySize) {
-                checkCond(7);
+                checkCondCombined(7);
                 // Try to borrow from left neighbor
                 T removeValue = leftNeighbor.getKey(leftNeighbor.numberOfKeys() - 1);
                 int prev = getIndexOfNextValue(parent, removeValue);
@@ -389,13 +389,13 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
                 node.addKey(parentValue);
                 parent.addKey(neighborValue);
                 if (leftNeighbor.numberOfChildren() > 0) {
-                    checkCond(8);
+                    checkCondCombined(8);
                     node.addChild(leftNeighbor.removeChild(leftNeighbor.numberOfChildren() - 1));
                 } else {
-                    checkCond(9);
+                    checkCondCombined(9);
                 }
             } else if (rightNeighbor != null && parent.numberOfKeys() > 0) {
-                checkCond(10);
+                checkCondCombined(10);
                 // Can't borrow from neighbors, try to combined with right neighbor
                 T removeValue = rightNeighbor.getKey(0);
                 int prev = getIndexOfPreviousValue(parent, removeValue);
@@ -403,31 +403,31 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
                 parent.removeChild(rightNeighbor);
                 node.addKey(parentValue);
                 for (int i = 0; i < rightNeighbor.keysSize; i++) {
-                    checkCond(11);
+                    checkCondCombined(11);
                     T v = rightNeighbor.getKey(i);
                     node.addKey(v);
                 }
                 for (int i = 0; i < rightNeighbor.childrenSize; i++) {
-                    checkCond(12);
+                    checkCondCombined(12);
                     Node<T> c = rightNeighbor.getChild(i);
                     node.addChild(c);
                 }
 
                 if (parent.parent != null && parent.numberOfKeys() < minKeySize) {
-                    checkCond(13);
+                    checkCondCombined(13);
                     // removing key made parent too small, combined up tree
                     this.combined(parent);
                 } else if (parent.numberOfKeys() == 0) {
-                    checkCond(14);
+                    checkCondCombined(14);
                     // parent no longer has keys, make this node the new root
                     // which decreases the height of the tree
                     node.parent = null;
                     root = node;
                 } else {
-                    checkCond(15);
+                    checkCondCombined(15);
                 }
             } else if (leftNeighbor != null && parent.numberOfKeys() > 0) {
-                checkCond(16);
+                checkCondCombined(16);
                 // Can't borrow from neighbors, try to combined with left neighbor
                 T removeValue = leftNeighbor.getKey(leftNeighbor.numberOfKeys() - 1);
                 int prev = getIndexOfNextValue(parent, removeValue);
@@ -435,31 +435,31 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
                 parent.removeChild(leftNeighbor);
                 node.addKey(parentValue);
                 for (int i = 0; i < leftNeighbor.keysSize; i++) {
-                    checkCond(17);
+                    checkCondCombined(17);
                     T v = leftNeighbor.getKey(i);
                     node.addKey(v);
                 }
                 for (int i = 0; i < leftNeighbor.childrenSize; i++) {
-                    checkCond(18);
+                    checkCondCombined(18);
                     Node<T> c = leftNeighbor.getChild(i);
                     node.addChild(c);
                 }
 
                 if (parent.parent != null && parent.numberOfKeys() < minKeySize) {
-                    checkCond(19);
+                    checkCondCombined(19);
                     // removing key made parent too small, combined up tree
                     this.combined(parent);
                 } else if (parent.numberOfKeys() == 0) {
-                    checkCond(20);
+                    checkCondCombined(20);
                     // parent no longer has keys, make this node the new root
                     // which decreases the height of the tree
                     node.parent = null;
                     root = node;
                 } else {
-                    checkCond(21);
+                    checkCondCombined(21);
                 }
             } else {
-                checkCond(22);
+                checkCondCombined(22);
             }
         }
 
@@ -519,6 +519,20 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
         return validateNode(root);
     }
 
+    private static boolean doneValidateNode = false;
+    private void checkCondValidateNode (int index) {
+        if (doneValidateNode) return;
+        if (!conditions[index]) {
+            conditions[index] = true;
+            System.out.printf("[BTree::validateNode] Branch id %d was taken%n", index);
+            for (boolean b : conditions) {
+                if (!b) return;
+            }
+            doneValidateNode = true;
+            System.out.println("[BTree::validateNode] All branches taken");
+        }
+    }
+
     /**
      * Validate the node according to the B-Tree invariants.
      *
@@ -529,97 +543,120 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
     private boolean validateNode(Node<T> node) {
         int keySize = node.numberOfKeys();
         if (keySize > 1) {
+            checkCondValidateNode(0);
             // Make sure the keys are sorted
             for (int i = 1; i < keySize; i++) {
+                checkCondValidateNode(1);
                 T p = node.getKey(i - 1);
                 T n = node.getKey(i);
-                if (p.compareTo(n) > 0)
+                if (p.compareTo(n) > 0) {
+                    checkCondValidateNode(2);
                     return false;
                 }
                 else{
-                    checkCond(16);
+                    checkCondValidateNode(3);
                 }
             }
+        } else {
+            checkCondValidateNode(4);
         }
         int childrenSize = node.numberOfChildren();
         if (node.parent == null) {
+            checkCondValidateNode(5);
             // root
             if (keySize > maxKeySize) {
+                checkCondValidateNode(6);
                 // check max key size. root does not have a min key size
                 return false;
             } else if (childrenSize == 0) {
+                checkCondValidateNode(7);
                 // if root, no children, and keys are valid
                 return true;
             } else if (childrenSize < 2) {
+                checkCondValidateNode(8);
                 // root should have zero or at least two children
                 return false;
             } else if (childrenSize > maxChildrenSize) {
+                checkCondValidateNode(9);
                 return false;
             } else{
-                checkCond(17);
+                checkCondValidateNode(10);
             }
         } else {
+            checkCondValidateNode(11);
             // non-root
             if (keySize < minKeySize) {
+                checkCondValidateNode(12);
                 return false;
             } else if (keySize > maxKeySize) {
+                checkCondValidateNode(13);
                 return false;
             } else if (childrenSize == 0) {
+                checkCondValidateNode(14);
                 return true;
             } else if (keySize != (childrenSize - 1)) {
+                checkCondValidateNode(15);
                 // If there are chilren, there should be one more child then
                 // keys
                 return false;
             } else if (childrenSize < minChildrenSize) {
+                checkCondValidateNode(16);
                 return false;
             } else if (childrenSize > maxChildrenSize) {
+                checkCondValidateNode(17);
                 return false;
             } else{
-                checkCond(18);
+                checkCondValidateNode(18);
             }
         }
 
         Node<T> first = node.getChild(0);
         // The first child's last key should be less than the node's first key
-        if (first.getKey(first.numberOfKeys() - 1).compareTo(node.getKey(0)) > 0)
+        if (first.getKey(first.numberOfKeys() - 1).compareTo(node.getKey(0)) > 0) {
+            checkCondValidateNode(19);
             return false;
         } else{
-            checkCond(19);
+            checkCondValidateNode(20);
         }
 
         Node<T> last = node.getChild(node.numberOfChildren() - 1);
         // The last child's first key should be greater than the node's last key
-        if (last.getKey(0).compareTo(node.getKey(node.numberOfKeys() - 1)) < 0)
+        if (last.getKey(0).compareTo(node.getKey(node.numberOfKeys() - 1)) < 0) {
+            checkCondValidateNode(21);
             return false;
         } else {
-            checkCond(20);
+            checkCondValidateNode(22);
         }
 
         // Check that each node's first and last key holds it's invariance
         for (int i = 1; i < node.numberOfKeys(); i++) {
+            checkCondValidateNode(23);
             T p = node.getKey(i - 1);
             T n = node.getKey(i);
             Node<T> c = node.getChild(i);
-            if (p.compareTo(c.getKey(0)) > 0)
+            if (p.compareTo(c.getKey(0)) > 0) {
+                checkCondValidateNode(24);
                 return false;
             } else {
-                checkCond(21);
+                checkCondValidateNode(25);
             }
             if (n.compareTo(c.getKey(c.numberOfKeys() - 1)) < 0){
-                checkCond(14); 
+                checkCondValidateNode(26); 
                 return false;
             } else {
-                checkCond(22);
+                checkCondValidateNode(27);
             }
         }
 
         for (int i = 0; i < node.childrenSize; i++) {
+            checkCondValidateNode(28);
             Node<T> c = node.getChild(i);
             boolean valid = this.validateNode(c);
-            if (!valid)
+            if (!valid) {
+                checkCondValidateNode(29);
                 return false;
             } else {
-                checkCond(23);
+                checkCondValidateNode(30);
             }
         }
 
