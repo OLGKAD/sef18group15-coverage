@@ -30,6 +30,7 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
 
     private Node<T> root = null;
     private int size = 0;
+    private static boolean[] conditions = new boolean[24];
 
     /**
      * Constructor for B-Tree which defaults to a 2-3 B-Tree.
@@ -534,6 +535,10 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
                 T n = node.getKey(i);
                 if (p.compareTo(n) > 0)
                     return false;
+                }
+                else{
+                    checkCond(16);
+                }
             }
         }
         int childrenSize = node.numberOfChildren();
@@ -550,6 +555,8 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
                 return false;
             } else if (childrenSize > maxChildrenSize) {
                 return false;
+            } else{
+                checkCond(17);
             }
         } else {
             // non-root
@@ -567,6 +574,8 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
                 return false;
             } else if (childrenSize > maxChildrenSize) {
                 return false;
+            } else{
+                checkCond(18);
             }
         }
 
@@ -574,11 +583,17 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
         // The first child's last key should be less than the node's first key
         if (first.getKey(first.numberOfKeys() - 1).compareTo(node.getKey(0)) > 0)
             return false;
+        } else{
+            checkCond(19);
+        }
 
         Node<T> last = node.getChild(node.numberOfChildren() - 1);
         // The last child's first key should be greater than the node's last key
         if (last.getKey(0).compareTo(node.getKey(node.numberOfKeys() - 1)) < 0)
             return false;
+        } else {
+            checkCond(20);
+        }
 
         // Check that each node's first and last key holds it's invariance
         for (int i = 1; i < node.numberOfKeys(); i++) {
@@ -587,8 +602,15 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
             Node<T> c = node.getChild(i);
             if (p.compareTo(c.getKey(0)) > 0)
                 return false;
-            if (n.compareTo(c.getKey(c.numberOfKeys() - 1)) < 0)
+            } else {
+                checkCond(21);
+            }
+            if (n.compareTo(c.getKey(c.numberOfKeys() - 1)) < 0){
+                checkCond(14); 
                 return false;
+            } else {
+                checkCond(22);
+            }
         }
 
         for (int i = 0; i < node.childrenSize; i++) {
@@ -596,6 +618,9 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
             boolean valid = this.validateNode(c);
             if (!valid)
                 return false;
+            } else {
+                checkCond(23);
+            }
         }
 
         return true;
