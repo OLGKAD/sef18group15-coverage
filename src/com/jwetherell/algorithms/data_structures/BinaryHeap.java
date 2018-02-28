@@ -183,15 +183,29 @@ public interface BinaryHeap<T extends Comparable<T>> extends IHeap<T> {
             }
         }
 
+        private static boolean[] conds = new boolean[13];
+        private static boolean done = false;
+        private void checkCond (int index) {
+            if (done) return;
+            if (!conds[index]) {
+                conds[index] = true;
+                System.out.printf("[BinaryHeap::heapDown] Branch id %d was taken%n", index);
+                for (boolean b : conds) {
+                    if (!b) return;
+                }
+                done = true;
+                System.out.println("[BinaryHeap::heapDown] All branches taken");
+            }
+        }
+
         protected void heapDown(int index) {
             T value = this.array[index];
             // the index is out of range
             if (value==null)  {
-                heapDownBranchCoverage.add(1);
-                //System.out.println(heapDownBranchCoverage);
+                checkCond(0);
                 return;
             } else {
-              heapDownBranchCoverage.add(2);
+                checkCond(1);
             }
 
             int leftIndex = getLeftIndex(index);
@@ -202,12 +216,12 @@ public interface BinaryHeap<T extends Comparable<T>> extends IHeap<T> {
 
             // only one node in the tree
             if (left == null && right == null) { // pi += 2
-                heapDownBranchCoverage.add(3);
+                checkCond(2);
                 // Nothing to do here
-                //System.out.println(heapDownBranchCoverage);
+                
                 return; // s += 1
             } else {
-              heapDownBranchCoverage.add(4);
+              checkCond(3);
             }
 
             T nodeToMove = null;
@@ -215,7 +229,7 @@ public interface BinaryHeap<T extends Comparable<T>> extends IHeap<T> {
             // It's a mean-heap, but node is > than its children OR it's a max-heap, but the node is < its children .
             if ((type == Type.MIN && left != null && right != null && value.compareTo(left) > 0 && value.compareTo(right) > 0) // pi += 5
                 || (type == Type.MAX && left != null && right != null && value.compareTo(left) < 0 && value.compareTo(right) < 0)) { // pi += 5
-                  heapDownBranchCoverage.add(5);
+                  checkCond(4);
                 // Both children are greater/lesser than node
                 // the right child should be swapped with the current node
 
@@ -223,7 +237,7 @@ public interface BinaryHeap<T extends Comparable<T>> extends IHeap<T> {
                 if ((right!=null) && // pi += 1
                     ((type == Type.MIN && (right.compareTo(left) < 0)) || ((type == Type.MAX && right.compareTo(left) > 0))) // pi += 4
                 ) {
-                  heapDownBranchCoverage.add(6);
+                  checkCond(5);
                     // Right is greater/lesser than left
                     nodeToMove = right;
                     nodeToMoveIndex = rightIndex;
@@ -231,15 +245,14 @@ public interface BinaryHeap<T extends Comparable<T>> extends IHeap<T> {
                 } else if ((left!=null) && // pi += 1
                            ((type == Type.MIN && left.compareTo(right) < 0) || (type == Type.MAX && left.compareTo(right) > 0)) // pi += 4
                 ) {
-                  heapDownBranchCoverage.add(7);
+                  checkCond(6);
                     // Left is greater/lesser than right
                     nodeToMove = left;
                     nodeToMoveIndex = leftIndex;
                 // right child == left child
                 // since test data is generated randomly, it's very unlikely that two nodes, sharing the same parent, will get assigned the same value
                 } else {
-                  heapDownBranchCoverage.add(8);
-                  System.out.println(8);
+                    checkCond(7);
                     // Both children are equal, use right
                     nodeToMove = right;
                     nodeToMoveIndex = rightIndex;
@@ -248,7 +261,7 @@ public interface BinaryHeap<T extends Comparable<T>> extends IHeap<T> {
             } else if ((type == Type.MIN && right != null && value.compareTo(right) > 0) // pi += 3
                        || (type == Type.MAX && right != null && value.compareTo(right) < 0) // pi += 3
             ) {
-              heapDownBranchCoverage.add(9);
+                checkCond(8);
                 // Right is greater/lesser than node
                 nodeToMove = right;
                 nodeToMoveIndex = rightIndex;
@@ -256,20 +269,19 @@ public interface BinaryHeap<T extends Comparable<T>> extends IHeap<T> {
             } else if ((type == Type.MIN && left != null && value.compareTo(left) > 0) // pi += 3
                        || (type == Type.MAX && left != null && value.compareTo(left) < 0) // pi += 3
             ) {
-              heapDownBranchCoverage.add(10);
+                checkCond(9);
                 // Left is greater/lesser than node
                 nodeToMove = left;
                 nodeToMoveIndex = leftIndex;
             } else {
-              heapDownBranchCoverage.add(11);
+                checkCond(10);
             }
             // No node to move, stop recursion
             if (nodeToMove == null) { // pi += 1
-              heapDownBranchCoverage.add(12);
-              //System.out.println(heapDownBranchCoverage);
+                checkCond(11);
                 return; // s += 1
             } else {
-              heapDownBranchCoverage.add(13);
+                checkCond(12);
             }
 
             // Re-factor heap sub-tree

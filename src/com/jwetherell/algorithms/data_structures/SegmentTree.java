@@ -1183,6 +1183,21 @@ public abstract class SegmentTree<D extends SegmentTree.Data> {
                 return segment;
             }
 
+            private static boolean[] conds = new boolean[31];
+            private static boolean done = false;
+            private void checkCond (int index) {
+                if (done) return;
+                if (!conds[index]) {
+                    conds[index] = true;
+                    System.out.printf("[SegmentTree::query] Branch id %d was taken%n", index);
+                    for (boolean b : conds) {
+                        if (!b) return;
+                    }
+                    done = true;
+                    System.out.println("[SegmentTree::query] All branches taken");
+                }
+            }
+
             /**
              * {@inheritDoc}
              */
@@ -1192,117 +1207,107 @@ public abstract class SegmentTree<D extends SegmentTree.Data> {
                 ArrayList<Integer> heapDownBranchCoverage = new ArrayList<Integer>();
 
                 if (startOfQuery == this.start && endOfQuery == this.end) {
-                    heapDownBranchCoverage.add(1);
+                    checkCond(0);
                     if (this.data == null) {
-                        heapDownBranchCoverage.add(2);
-                        //System.out.println(heapDownBranchCoverage);
+                        checkCond(1);
                         return null;
                     } else {
-                      heapDownBranchCoverage.add(3);
+                        checkCond(2);
                     }
                     final D dataToReturn = ((D) this.data.query(startOfQuery, endOfQuery));
-                    //System.out.println(heapDownBranchCoverage);
                     return dataToReturn;
                 } else {
-                  heapDownBranchCoverage.add(4);
+                    checkCond(3);
                 }
 
                 if (!this.hasChildren()) {
-                    heapDownBranchCoverage.add(5);
+                    checkCond(4);
                     if (endOfQuery < this.start || startOfQuery > this.end) {
-                        heapDownBranchCoverage.add(6);
+                        checkCond(5);
                         // Ignore
                     } else {
-                        heapDownBranchCoverage.add(7);
+                        checkCond(6);
                         D dataToReturn = null;
                         if (this.set.size() == 0) {
-                            heapDownBranchCoverage.add(8);
-                            //System.out.println(heapDownBranchCoverage);
+                            checkCond(7);
                             return dataToReturn;
                         } else {
-                          heapDownBranchCoverage.add(9);
+                            checkCond(8);
                         }
                         for (Segment<D> s : this.set) {
-                            heapDownBranchCoverage.add(10);
+                            checkCond(9);
+
                             if (s.start >= startOfQuery && s.end <= endOfQuery) {
-                                heapDownBranchCoverage.add(11);
+                                checkCond(10);
                                 if (dataToReturn == null) {
-                                    heapDownBranchCoverage.add(12);
+                                    checkCond(11);
                                     dataToReturn = (D) s.data.query(startOfQuery, endOfQuery);
                                 }
                                 else {
-                                    heapDownBranchCoverage.add(13);
+                                    checkCond(12);
                                     dataToReturn.combined(s.data);
                                 }
                             } else if (s.start <= startOfQuery && s.end >= endOfQuery) {
-                                heapDownBranchCoverage.add(14);
+                                checkCond(13);
                                 if (dataToReturn == null) {
-                                    heapDownBranchCoverage.add(15);
+                                    checkCond(14);
                                     dataToReturn = (D) s.data.query(startOfQuery, endOfQuery);
                                 }
                                 else {
-                                    heapDownBranchCoverage.add(16);
+                                    checkCond(15);
                                     dataToReturn.combined(s.data);
                                 }
                             } else {
-                              heapDownBranchCoverage.add(17);
+                                checkCond(16);
                             }
                         }
-                        //System.out.println(heapDownBranchCoverage);
                         return dataToReturn;
                     }
                 } else {
-                  heapDownBranchCoverage.add(18);
+                    checkCond(17);
                 }
 
                 if (this.hasChildren()) {
-                    heapDownBranchCoverage.add(19);
+                    checkCond(18);
                     if (startOfQuery <= this.getLeftChild().end && endOfQuery > this.getLeftChild().end) {
-                        heapDownBranchCoverage.add(20);
+                        checkCond(19);
                         final Data q1 = this.getLeftChild().query(startOfQuery, getLeftChild().end);
                         final Data q2 = this.getRightChild().query(getRightChild().start, endOfQuery);
                         if (q1 == null && q2 == null) {
-                            heapDownBranchCoverage.add(21);
-                            //System.out.println(heapDownBranchCoverage);
+                            checkCond(20);
                             return null;
                         } else {
-                            heapDownBranchCoverage.add(22);
+                            checkCond(21);
                         }
                         if (q1 != null && q2 == null) {
-                            heapDownBranchCoverage.add(23);
-                            //System.out.println(heapDownBranchCoverage);
+                            checkCond(22);
                             return (D) q1;
                         } else {
-                            heapDownBranchCoverage.add(24);
+                            checkCond(23);
                         }
                         if (q1 == null && q2 != null) {
-                            heapDownBranchCoverage.add(25);
-                            //System.out.println(heapDownBranchCoverage);
+                            checkCond(24);
                             return (D) q2;
                         } else {
-                          heapDownBranchCoverage.add(26);
+                            checkCond(25);
                         }
                         if (q1 != null && q2 != null) {
-                            heapDownBranchCoverage.add(27);
-                          //  System.out.println(heapDownBranchCoverage);
+                            checkCond(26);
                             return ((D) q1.combined(q2));
                         } else {
-                          heapDownBranchCoverage.add(28);
+                            checkCond(27);
                         }
                     } else if (startOfQuery <= this.getLeftChild().end && endOfQuery <= this.getLeftChild().end) {
-                        heapDownBranchCoverage.add(29);
-                      //  System.out.println(heapDownBranchCoverage);
+                        checkCond(28);
                         return this.getLeftChild().query(startOfQuery, endOfQuery);
                     } else {
-                      heapDownBranchCoverage.add(30);
+                        checkCond(29);
                     }
-                    //System.out.println(heapDownBranchCoverage);
                     return this.getRightChild().query(startOfQuery, endOfQuery);
                 } else {
-                  heapDownBranchCoverage.add(31);
+                    checkCond(30);
                 }
 
-                //System.out.println(heapDownBranchCoverage);
                 return null;
             }
 
