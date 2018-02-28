@@ -50,7 +50,8 @@ public class HashMapTests {
         HashMap<Integer,String> map2 = new HashMap<Integer,String>(HashMap.Type.CHAINING,2);
         assertNotNull(map);
         assertNotNull(map2);
-
+    }
+  
     @Test
     public void testClearMethod () {
         /**
