@@ -32,7 +32,7 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
     private Node<T> root = null;
     private int size = 0;
     
-    private static boolean[] conditions = new boolean[16];
+    private static boolean[] conditions = new boolean[24];
 
     
     /**
@@ -498,6 +498,9 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
                     checkCond(0);
                     return false;
                 }
+                else{
+                    checkCond(16);
+                }
             }
         }
         int childrenSize = node.numberOfChildren();
@@ -518,6 +521,8 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
             } else if (childrenSize > maxChildrenSize) {
                 checkCond(4);
                 return false;
+            } else{
+                checkCond(17);
             }
         } else {
             // non-root
@@ -541,6 +546,8 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
             } else if (childrenSize > maxChildrenSize) {
                 checkCond(10);
                 return false;
+            } else{
+                checkCond(18);
             }
         }
 
@@ -549,12 +556,16 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
         if (first.getKey(first.numberOfKeys() - 1).compareTo(node.getKey(0)) > 0) {
             checkCond(11);
             return false;
+        } else{
+            checkCond(19);
         }
         Node<T> last = node.getChild(node.numberOfChildren() - 1);
         // The last child's first key should be greater than the node's last key
         if (last.getKey(0).compareTo(node.getKey(node.numberOfKeys() - 1)) < 0) {
             checkCond(12);
             return false;
+        } else {
+            checkCond(20);
         }
 
         // Check that each node's first and last key holds it's invariance
@@ -565,10 +576,14 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
             if (p.compareTo(c.getKey(0)) > 0){
                 checkCond(13);
                 return false;
+            } else {
+                checkCond(21);
             }
             if (n.compareTo(c.getKey(c.numberOfKeys() - 1)) < 0){
                 checkCond(14); 
                 return false;
+            } else {
+                checkCond(22);
             }
         }
 
@@ -578,6 +593,8 @@ public class BTree<T extends Comparable<T>> implements ITree<T> {
             if (!valid){
                 checkCond(15);
                 return false;
+            } else {
+                checkCond(23);
             }
         }
 
