@@ -34,7 +34,7 @@ public abstract class SegmentTree<D extends SegmentTree.Data> {
 
     /**
      * Stabbing query
-     * 
+     *
      * @param index
      *            index to query
      * @return data at index.
@@ -43,7 +43,7 @@ public abstract class SegmentTree<D extends SegmentTree.Data> {
 
     /**
      * Range query
-     * 
+     *
      * @param start
      *            start of range (inclusive)
      * @param end
@@ -69,7 +69,7 @@ public abstract class SegmentTree<D extends SegmentTree.Data> {
 
         /**
          * Constructor for data at index
-         * 
+         *
          * @param index
          *            of data.
          */
@@ -80,7 +80,7 @@ public abstract class SegmentTree<D extends SegmentTree.Data> {
 
         /**
          * Constructor for data at range (inclusive)
-         * 
+         *
          * @param start
          *            start of range for data.
          * @param end
@@ -101,7 +101,7 @@ public abstract class SegmentTree<D extends SegmentTree.Data> {
 
         /**
          * Combined this data with the Data parameter
-         * 
+         *
          * @param data
          *            Data to combined
          * @return Data which represents the combination.
@@ -110,14 +110,14 @@ public abstract class SegmentTree<D extends SegmentTree.Data> {
 
         /**
          * Deep copy of data.
-         * 
+         *
          * @return deep copy.
          */
         public abstract Data copy();
 
         /**
          * Query inside this data object.
-         * 
+         *
          * @param startOfRange
          *            start of range (inclusive)
          * @param endOfRange
@@ -245,7 +245,7 @@ public abstract class SegmentTree<D extends SegmentTree.Data> {
                     return false;
                 QuadrantData data = (QuadrantData) obj;
                 if (this.start == data.start && this.end == data.end && this.quad0 == data.quad0
-                    && this.quad1 == data.quad1 && this.quad2 == data.quad2 && this.quad3 == data.quad3) 
+                    && this.quad1 == data.quad1 && this.quad2 == data.quad2 && this.quad3 == data.quad3)
                 {
                     return true;
                 }
@@ -332,34 +332,86 @@ public abstract class SegmentTree<D extends SegmentTree.Data> {
                 return this;
             }
 
+            private static boolean[] combinedConds = new boolean[22];
+            private static boolean done = false;
+            private void checkCond (int index) {
+                if (done) return;
+                if (!combinedConds[index]) {
+                    combinedConds[index] = true;
+                    System.out.printf("[RangeMaximumData::combined] Branch id %d was taken%n", index);
+                    for (boolean b : combinedConds) {
+                        if (!b) return;
+                    }
+                    done = true;
+                    System.out.println("[RangeMaximumData::combined] All branches taken");
+                }
+            }
+
             private void combined(RangeMaximumData<N> data) {
-                if (this.maximum == null && data.maximum == null)
+                if (this.maximum == null && data.maximum == null){
+                    checkCond(0);
                     return;
-                else if (this.maximum != null && data.maximum == null)
+                }
+                else if (this.maximum != null && data.maximum == null){
+                    checkCond(1);
                     return;
-                else if (this.maximum == null && data.maximum != null)
+                }
+                else if (this.maximum == null && data.maximum != null){
+                    checkCond(2);
                     this.maximum = data.maximum;
+                }
                 else {
+                    checkCond(3);
                     /* TODO: This is ugly */
                     if (this.maximum instanceof BigDecimal || data.maximum instanceof BigDecimal) {
-                        if (((BigDecimal)data.maximum).compareTo(((BigDecimal)this.maximum))==1)
+                        checkCond(4);
+                        if (((BigDecimal)data.maximum).compareTo(((BigDecimal)this.maximum))==1) {
+                            checkCond(5);
                             this.maximum = data.maximum;
+                        } else {
+                            checkCond(6);
+                        }
                     } else if (this.maximum instanceof BigInteger || data.maximum instanceof BigInteger) {
-                        if (((BigInteger)data.maximum).compareTo(((BigInteger)this.maximum))==1)
+                        checkCond(7);
+                        if (((BigInteger)data.maximum).compareTo(((BigInteger)this.maximum))==1) {
+                            checkCond(8);
                             this.maximum = data.maximum;
+                        } else {
+                            checkCond(9);
+                        }
                     } else if (this.maximum instanceof Long || data.maximum instanceof Long) {
-                        if (((Long)data.maximum).compareTo(((Long)this.maximum))==1)
+                        checkCond(10);
+                        if (((Long)data.maximum).compareTo(((Long)this.maximum))==1) {
+                            checkCond(11);
                             this.maximum = data.maximum;
+                        } else {
+                            checkCond(12);
+                        }
                     } else if (this.maximum instanceof Double || data.maximum instanceof Double) {
-                        if (((Double)data.maximum).compareTo(((Double)this.maximum))==1)
+                        checkCond(13);
+                        if (((Double)data.maximum).compareTo(((Double)this.maximum))==1) {
+                            checkCond(14);
                             this.maximum = data.maximum;
+                        } else {
+                            checkCond(15);
+                        }
                     } else if (this.maximum instanceof Float || data.maximum instanceof Float) {
-                        if (((Float)data.maximum).compareTo(((Float)this.maximum))==1)
+                        checkCond(16);
+                        if (((Float)data.maximum).compareTo(((Float)this.maximum))==1) {
+                            checkCond(17);
                             this.maximum = data.maximum;
+                        } else {
+                            checkCond(18);
+                        }
                     } else {
+                        checkCond(19);
                         // Integer
-                        if (((Integer)data.maximum).compareTo(((Integer)this.maximum))==1)
+                        if (((Integer)data.maximum).compareTo(((Integer)this.maximum))==1) {
+                            checkCond(20);
                             this.maximum = data.maximum;
+                        } else {
+                            checkCond(21);
+                        }
                     }
                 }
             }
@@ -404,6 +456,24 @@ public abstract class SegmentTree<D extends SegmentTree.Data> {
         public static final class RangeMinimumData<N extends Number> extends Data {
 
             public N minimum = null;
+
+
+            private static boolean[] combinedConds = new boolean[22];
+
+            private void checkCond (int index) {
+                if (!combinedConds[index]) {
+                    combinedConds[index] = true;
+                    System.out.printf("[combined()] Branch id %d taken%n", index);
+                }
+            }
+
+            public void printChecks(){
+                System.out.println("These branches were not taken: ");
+                for (int i = 0; i < combinedConds.length; i++) {
+                    if (!combinedConds[i])
+                        System.out.println(" "+i);
+                }
+            }
 
             public RangeMinimumData(long start, long end) {
                 super(start, end);
@@ -464,36 +534,82 @@ public abstract class SegmentTree<D extends SegmentTree.Data> {
             }
 
             private void combined(RangeMinimumData<N> data) {
-                if (this.minimum == null && data.minimum == null)
+                if (this.minimum == null && data.minimum == null){
+                    checkCond(0);
                     return;
-                else if (this.minimum != null && data.minimum == null)
+                }
+                else if (this.minimum != null && data.minimum == null){
+                    checkCond(1);
                     return;
-                else if (this.minimum == null && data.minimum != null)
+                }
+                else if (this.minimum == null && data.minimum != null){
+                    checkCond(2);
                     this.minimum = data.minimum;
+                }
                 else {
+                    checkCond(3);
                     /* TODO: This is ugly */
                     if (this.minimum instanceof BigDecimal || data.minimum instanceof BigDecimal) {
-                        if (((BigDecimal)data.minimum).compareTo(((BigDecimal)this.minimum))==-1)
+                        checkCond(4);
+                        if (((BigDecimal)data.minimum).compareTo(((BigDecimal)this.minimum))==-1){
+                            checkCond(5);
                             this.minimum = data.minimum;
+                        }
+                        else {
+                            checkCond(6);
+                        }
                     } else if (this.minimum instanceof BigInteger || data.minimum instanceof BigInteger) {
-                        if (((BigInteger)data.minimum).compareTo(((BigInteger)this.minimum))==-1)
+                        checkCond(7);
+                        if (((BigInteger)data.minimum).compareTo(((BigInteger)this.minimum))==-1){
+                            checkCond(8);
                             this.minimum = data.minimum;
+                        }
+                        else {
+                            checkCond(9);
+                        }
                     } else if (this.minimum instanceof Long || data.minimum instanceof Long) {
-                        if (((Long)data.minimum).compareTo(((Long)this.minimum))==-1)
+                        checkCond(10);
+                        if (((Long)data.minimum).compareTo(((Long)this.minimum))==-1){
+                            checkCond(11);
                             this.minimum = data.minimum;
+                        }
+                        else {
+                            checkCond(12);
+                        }
                     } else if (this.minimum instanceof Double || data.minimum instanceof Double) {
-                        if (((Double)data.minimum).compareTo(((Double)this.minimum))==-1)
+                        checkCond(13);
+                        if (((Double)data.minimum).compareTo(((Double)this.minimum))==-1){
+                            checkCond(14);
                             this.minimum = data.minimum;
+                        }
+                        else {
+                            checkCond(15);
+                        }
                     } else if (this.minimum instanceof Float || data.minimum instanceof Float) {
-                        if (((Float)data.minimum).compareTo(((Float)this.minimum))==-1)
+                        checkCond(16);
+                        if (((Float)data.minimum).compareTo(((Float)this.minimum))==-1){
+                            checkCond(17);
                             this.minimum = data.minimum;
+                        }
+                        else {
+                            checkCond(18);
+                        }
                     } else {
+                        checkCond(19);
                         // Integer
-                        if (((Integer)data.minimum).compareTo(((Integer)this.minimum))==-1)
+                        if (((Integer)data.minimum).compareTo(((Integer)this.minimum))==-1){
+                            checkCond(20);
                             this.minimum = data.minimum;
+                        }
+                        else {
+                            checkCond(21);
+                        }
                     }
                 }
             }
+
+
+
 
             /**
              * {@inheritDoc}
@@ -510,7 +626,7 @@ public abstract class SegmentTree<D extends SegmentTree.Data> {
             public boolean equals(Object obj) {
                 if (!(obj instanceof RangeMinimumData))
                     return false;
- 
+
                 final RangeMinimumData<N> data = (RangeMinimumData<N>) obj;
                 if (this.start == data.start && this.end == data.end && this.minimum.equals(data.minimum))
                     return true;
@@ -671,7 +787,7 @@ public abstract class SegmentTree<D extends SegmentTree.Data> {
 
             /**
              * Interval data using O as it's unique identifier
-             * 
+             *
              * @param object
              *            Object which defines the interval data
              */
@@ -683,7 +799,7 @@ public abstract class SegmentTree<D extends SegmentTree.Data> {
 
             /**
              * Interval data using O as it's unique identifier
-             * 
+             *
              * @param object
              *            Object which defines the interval data
              */
@@ -695,7 +811,7 @@ public abstract class SegmentTree<D extends SegmentTree.Data> {
 
             /**
              * Interval data list which should all be unique
-             * 
+             *
              * @param set
              *            of interval data objects
              */
@@ -707,7 +823,7 @@ public abstract class SegmentTree<D extends SegmentTree.Data> {
 
             /**
              * Get the data set in this interval
-             * 
+             *
              * @return Unmodifiable collection of data objects
              */
             public Collection<O> getData() {
@@ -760,7 +876,7 @@ public abstract class SegmentTree<D extends SegmentTree.Data> {
 
             /**
              * Combined for interval specific data.
-             * 
+             *
              * @param data
              *            resulted from combination.
              */
@@ -833,7 +949,7 @@ public abstract class SegmentTree<D extends SegmentTree.Data> {
 
         /**
          * Query for data in range.
-         * 
+         *
          * @param startOfQuery
          *            of the range to query for.
          * @param endOfQuery
@@ -1049,7 +1165,7 @@ public abstract class SegmentTree<D extends SegmentTree.Data> {
                             // Need to split across middle
                             final NonOverlappingSegment<D> ss1 = new NonOverlappingSegment<D>(minLength, s.start, middle - 1, s.data);
                             s1.add(ss1);
- 
+
                             final NonOverlappingSegment<D> ss2 = new NonOverlappingSegment<D>(minLength, middle, s.end, s.data);
                             s2.add(ss2);
                         }
@@ -1072,55 +1188,121 @@ public abstract class SegmentTree<D extends SegmentTree.Data> {
              */
             @Override
             public D query(long startOfQuery, long endOfQuery) {
+
+                ArrayList<Integer> heapDownBranchCoverage = new ArrayList<Integer>();
+
                 if (startOfQuery == this.start && endOfQuery == this.end) {
-                    if (this.data == null)
+                    heapDownBranchCoverage.add(1);
+                    if (this.data == null) {
+                        heapDownBranchCoverage.add(2);
+                        //System.out.println(heapDownBranchCoverage);
                         return null;
+                    } else {
+                      heapDownBranchCoverage.add(3);
+                    }
                     final D dataToReturn = ((D) this.data.query(startOfQuery, endOfQuery));
+                    //System.out.println(heapDownBranchCoverage);
                     return dataToReturn;
+                } else {
+                  heapDownBranchCoverage.add(4);
                 }
 
                 if (!this.hasChildren()) {
+                    heapDownBranchCoverage.add(5);
                     if (endOfQuery < this.start || startOfQuery > this.end) {
+                        heapDownBranchCoverage.add(6);
                         // Ignore
                     } else {
+                        heapDownBranchCoverage.add(7);
                         D dataToReturn = null;
-                        if (this.set.size() == 0)
+                        if (this.set.size() == 0) {
+                            heapDownBranchCoverage.add(8);
+                            //System.out.println(heapDownBranchCoverage);
                             return dataToReturn;
+                        } else {
+                          heapDownBranchCoverage.add(9);
+                        }
                         for (Segment<D> s : this.set) {
+                            heapDownBranchCoverage.add(10);
                             if (s.start >= startOfQuery && s.end <= endOfQuery) {
-                                if (dataToReturn == null)
+                                heapDownBranchCoverage.add(11);
+                                if (dataToReturn == null) {
+                                    heapDownBranchCoverage.add(12);
                                     dataToReturn = (D) s.data.query(startOfQuery, endOfQuery);
-                                else
+                                }
+                                else {
+                                    heapDownBranchCoverage.add(13);
                                     dataToReturn.combined(s.data);
+                                }
                             } else if (s.start <= startOfQuery && s.end >= endOfQuery) {
-                                if (dataToReturn == null)
+                                heapDownBranchCoverage.add(14);
+                                if (dataToReturn == null) {
+                                    heapDownBranchCoverage.add(15);
                                     dataToReturn = (D) s.data.query(startOfQuery, endOfQuery);
-                                else
+                                }
+                                else {
+                                    heapDownBranchCoverage.add(16);
                                     dataToReturn.combined(s.data);
+                                }
+                            } else {
+                              heapDownBranchCoverage.add(17);
                             }
                         }
+                        //System.out.println(heapDownBranchCoverage);
                         return dataToReturn;
                     }
-                } 
-
-                if (this.hasChildren()) {
-                    if (startOfQuery <= this.getLeftChild().end && endOfQuery > this.getLeftChild().end) {
-                        final Data q1 = this.getLeftChild().query(startOfQuery, getLeftChild().end);
-                        final Data q2 = this.getRightChild().query(getRightChild().start, endOfQuery);
-                        if (q1 == null && q2 == null)
-                            return null;
-                        if (q1 != null && q2 == null)
-                            return (D) q1;
-                        if (q1 == null && q2 != null)
-                            return (D) q2;
-                        if (q1 != null && q2 != null) 
-                            return ((D) q1.combined(q2));
-                    } else if (startOfQuery <= this.getLeftChild().end && endOfQuery <= this.getLeftChild().end) {
-                        return this.getLeftChild().query(startOfQuery, endOfQuery);
-                    }
-                    return this.getRightChild().query(startOfQuery, endOfQuery);
+                } else {
+                  heapDownBranchCoverage.add(18);
                 }
 
+                if (this.hasChildren()) {
+                    heapDownBranchCoverage.add(19);
+                    if (startOfQuery <= this.getLeftChild().end && endOfQuery > this.getLeftChild().end) {
+                        heapDownBranchCoverage.add(20);
+                        final Data q1 = this.getLeftChild().query(startOfQuery, getLeftChild().end);
+                        final Data q2 = this.getRightChild().query(getRightChild().start, endOfQuery);
+                        if (q1 == null && q2 == null) {
+                            heapDownBranchCoverage.add(21);
+                            //System.out.println(heapDownBranchCoverage);
+                            return null;
+                        } else {
+                            heapDownBranchCoverage.add(22);
+                        }
+                        if (q1 != null && q2 == null) {
+                            heapDownBranchCoverage.add(23);
+                            //System.out.println(heapDownBranchCoverage);
+                            return (D) q1;
+                        } else {
+                            heapDownBranchCoverage.add(24);
+                        }
+                        if (q1 == null && q2 != null) {
+                            heapDownBranchCoverage.add(25);
+                            //System.out.println(heapDownBranchCoverage);
+                            return (D) q2;
+                        } else {
+                          heapDownBranchCoverage.add(26);
+                        }
+                        if (q1 != null && q2 != null) {
+                            heapDownBranchCoverage.add(27);
+                          //  System.out.println(heapDownBranchCoverage);
+                            return ((D) q1.combined(q2));
+                        } else {
+                          heapDownBranchCoverage.add(28);
+                        }
+                    } else if (startOfQuery <= this.getLeftChild().end && endOfQuery <= this.getLeftChild().end) {
+                        heapDownBranchCoverage.add(29);
+                      //  System.out.println(heapDownBranchCoverage);
+                        return this.getLeftChild().query(startOfQuery, endOfQuery);
+                    } else {
+                      heapDownBranchCoverage.add(30);
+                    }
+                    //System.out.println(heapDownBranchCoverage);
+                    return this.getRightChild().query(startOfQuery, endOfQuery);
+                } else {
+                  heapDownBranchCoverage.add(31);
+                }
+
+                //System.out.println(heapDownBranchCoverage);
                 return null;
             }
 

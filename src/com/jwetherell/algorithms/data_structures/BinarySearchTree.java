@@ -73,7 +73,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
     /**
      * Add value to the tree and return the Node that was added. Tree can
      * contain multiple equal values.
-     * 
+     *
      * @param value
      *            T to add to the tree.
      * @return Node<T> which was added to the tree.
@@ -127,7 +127,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
 
     /**
      * Locate T in the tree.
-     * 
+     *
      * @param value
      *            T to locate in the tree.
      * @return Node<T> representing first reference of value in tree or NULL if
@@ -149,7 +149,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
 
     /**
      * Rotate tree left at sub-tree rooted at node.
-     * 
+     *
      * @param node
      *            Root of tree to rotate left.
      */
@@ -183,7 +183,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
 
     /**
      * Rotate tree right at sub-tree rooted at node.
-     * 
+     *
      * @param node
      *            Root of tree to rotate right.
      */
@@ -218,7 +218,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
     /**
      * Get greatest node in sub-tree rooted at startingNode. The search does not
      * include startingNode in it's results.
-     * 
+     *
      * @param startingNode
      *            Root of tree to search.
      * @return Node<T> which represents the greatest node in the startingNode
@@ -242,7 +242,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
     /**
      * Get least node in sub-tree rooted at startingNode. The search does not
      * include startingNode in it's results.
-     * 
+     *
      * @param startingNode
      *            Root of tree to search.
      * @return Node<T> which represents the least node in the startingNode
@@ -274,21 +274,21 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
 
     /**
      * Remove first occurrence of value in the tree.
-     * 
+     *
      * @param value
      *            T to remove from the tree.
      * @return Node<T> which was removed from the tree.
      */
     protected Node<T> removeValue(T value) {
         Node<T> nodeToRemoved = this.getNode(value);
-        if (nodeToRemoved != null) 
+        if (nodeToRemoved != null)
             nodeToRemoved = removeNode(nodeToRemoved);
         return nodeToRemoved;
     }
 
     /**
      * Remove the node using a replacement
-     * 
+     *
      * @param nodeToRemoved
      *            Node<T> to remove from the tree.
      * @return nodeRemove
@@ -306,7 +306,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
     /**
      * Get the proper replacement node according to the binary search tree
      * algorithm from the tree.
-     * 
+     *
      * @param nodeToRemoved
      *            Node<T> to find a replacement for.
      * @return Node<T> which can be used to replace nodeToRemoved. nodeToRemoved
@@ -338,9 +338,29 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
         return replacement;
     }
 
+
+    public static boolean[] pathTakenReplaceNodeWithNode = new boolean[25];
+    public static boolean allPathsTakenRNWN = false;
+    private void checkPathTakenRNWN(int index){
+        if(!allPathsTakenRNWN){
+            if(!pathTakenReplaceNodeWithNode[index]){
+                pathTakenReplaceNodeWithNode[index] = true;
+                System.out.println("replaceNodeWithNode, "+index);
+                for (boolean path: pathTakenReplaceNodeWithNode) {
+                   if(!path){
+                        return;
+                   } 
+                }
+                allPathsTakenRNWN = true;
+                System.out.println("replaceNodeWithNode, all branches covered");
+            }
+        }
+    }
+
+
     /**
      * Replace nodeToRemoved with replacementNode in the tree.
-     * 
+     *
      * @param nodeToRemoved
      *            Node<T> to remove replace in the tree. nodeToRemoved should
      *            NOT be NULL.
@@ -350,6 +370,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
      */
     protected void replaceNodeWithNode(Node<T> nodeToRemoved, Node<T> replacementNode) {
         if (replacementNode != null) {
+            checkPathTakenRNWN(0);
             // Save for later
             Node<T> replacementNodeLesser = replacementNode.lesser;
             Node<T> replacementNodeGreater = replacementNode.greater;
@@ -357,48 +378,98 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
             // Replace replacementNode's branches with nodeToRemove's branches
             Node<T> nodeToRemoveLesser = nodeToRemoved.lesser;
             if (nodeToRemoveLesser != null && nodeToRemoveLesser != replacementNode) {
+                checkPathTakenRNWN(1);
                 replacementNode.lesser = nodeToRemoveLesser;
                 nodeToRemoveLesser.parent = replacementNode;
             }
+            else{
+            checkPathTakenRNWN(2);
+            }
             Node<T> nodeToRemoveGreater = nodeToRemoved.greater;
             if (nodeToRemoveGreater != null && nodeToRemoveGreater != replacementNode) {
+                checkPathTakenRNWN(3);
                 replacementNode.greater = nodeToRemoveGreater;
                 nodeToRemoveGreater.parent = replacementNode;
+            }
+            else{
+                checkPathTakenRNWN(4);
             }
 
             // Remove link from replacementNode's parent to replacement
             Node<T> replacementParent = replacementNode.parent;
             if (replacementParent != null && replacementParent != nodeToRemoved) {
+                checkPathTakenRNWN(5);
                 Node<T> replacementParentLesser = replacementParent.lesser;
                 Node<T> replacementParentGreater = replacementParent.greater;
                 if (replacementParentLesser != null && replacementParentLesser == replacementNode) {
+                    checkPathTakenRNWN(6);
                     replacementParent.lesser = replacementNodeGreater;
-                    if (replacementNodeGreater != null)
+                    if (replacementNodeGreater != null){
                         replacementNodeGreater.parent = replacementParent;
+                        checkPathTakenRNWN(7);
+                    }
+                    else{
+                        checkPathTakenRNWN(8);
+                    }
                 } else if (replacementParentGreater != null && replacementParentGreater == replacementNode) {
+                    checkPathTakenRNWN(9);
                     replacementParent.greater = replacementNodeLesser;
-                    if (replacementNodeLesser != null)
+                    if (replacementNodeLesser != null){
+                        checkPathTakenRNWN(10);
                         replacementNodeLesser.parent = replacementParent;
+                    }
+                    else{
+                        checkPathTakenRNWN(11);
+                        }
                 }
+                else{
+                    checkPathTakenRNWN(12);
+                }
+            }else{
+                checkPathTakenRNWN(13);
             }
+        }
+        else{
+            checkPathTakenRNWN(14);
         }
 
         // Update the link in the tree from the nodeToRemoved to the
         // replacementNode
         Node<T> parent = nodeToRemoved.parent;
         if (parent == null) {
+            checkPathTakenRNWN(15);
             // Replacing the root node
             root = replacementNode;
-            if (root != null)
+            if (root != null){
+                checkPathTakenRNWN(16);
                 root.parent = null;
+            }
+            else{
+                checkPathTakenRNWN(17);
+            }
         } else if (parent.lesser != null && (parent.lesser.id.compareTo(nodeToRemoved.id) == 0)) {
+            checkPathTakenRNWN(18);
             parent.lesser = replacementNode;
-            if (replacementNode != null)
+            if (replacementNode != null){
+                checkPathTakenRNWN(19);
                 replacementNode.parent = parent;
+            }else{
+                checkPathTakenRNWN(20);
+            }
         } else if (parent.greater != null && (parent.greater.id.compareTo(nodeToRemoved.id) == 0)) {
+            checkPathTakenRNWN(21);
             parent.greater = replacementNode;
-            if (replacementNode != null)
+            if (replacementNode != null){
+                checkPathTakenRNWN(22);
                 replacementNode.parent = parent;
+            }else{
+                checkPathTakenRNWN(23);
+            }
+            
+        }
+        else{
+            System.out.println("derp");
+            checkPathTakenRNWN(24);
         }
         size--;
     }
@@ -431,7 +502,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
 
     /**
      * Validate the node for all Binary Search Tree invariants.
-     * 
+     *
      * @param node
      *            Node<T> to validate in the tree. node should NOT be NULL.
      * @return True if the node is valid.
@@ -460,19 +531,19 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
 
     /**
      * Get an array representation of the tree in breath first search order.
-     * 
+     *
      * @return breath first search sorted array representing the tree.
      */
-    public T[] getBFS() { 
+    public T[] getBFS() {
         return getBFS(this.root, this.size);
     }
 
     /**
      * Get an array representation of the tree in breath first search order.
-     * 
+     *
      * @param start rooted node
      * @param size of tree rooted at start
-     * 
+     *
      * @return breath first search sorted array representing the tree.
      */
     public static <T extends Comparable<T>> T[] getBFS(Node<T> start, int size) {
@@ -496,7 +567,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
 
     /**
      * Get an array representation of the tree in level order.
-     * 
+     *
      * @return level order sorted array representing the tree.
      */
     public T[] getLevelOrder() {
@@ -505,22 +576,40 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
 
     /**
      * Get an array representation of the tree in-order.
-     * 
+     *
      * @param order of search
-     * 
+     *
      * @return order sorted array representing the tree.
      */
     public T[] getDFS(DepthFirstSearchOrder order) {
         return getDFS(order, this.root, this.size);
     }
 
+    public static boolean[] pathTakenGetDFS = new boolean[26];
+    public static boolean allPathsTakenGetDFS = false;
+    private static void checkPathTakenGetDFS(int index){
+        if(!allPathsTakenGetDFS){
+            if(!pathTakenGetDFS[index]){
+                pathTakenGetDFS[index] = true;
+                System.out.println("getDFS, "+index);
+                for (boolean path: pathTakenGetDFS) {
+                   if(!path){
+                        return;
+                   } 
+                }
+                allPathsTakenRNWN = true;
+                System.out.println("getDFS, all branches covered");
+            }
+        }
+    }
+
     /**
      * Get an array representation of the tree in-order.
-     * 
+     *
      * @param order of search
      * @param start rooted node
      * @param size of tree rooted at start
-     * 
+     *
      * @return order sorted array representing the tree.
      */
     public static <T extends Comparable<T>> T[] getDFS(DepthFirstSearchOrder order, Node<T> start, int size) {
@@ -529,56 +618,87 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
         int index = 0;
         Node<T> node = start;
         while (index < size && node != null) {
+            checkPathTakenGetDFS(0);
             Node<T> parent = node.parent;
             Node<T> lesser = (node.lesser != null && !added.contains(node.lesser)) ? node.lesser : null;
             Node<T> greater = (node.greater != null && !added.contains(node.greater)) ? node.greater : null;
-
             if (parent == null && lesser == null && greater == null) {
-                if (!added.contains(node))
+                checkPathTakenGetDFS(1);
+
+                if (!added.contains(node)){
+                    checkPathTakenGetDFS(2);
                     nodes[index++] = node.id;
+                }else{
+                    checkPathTakenGetDFS(3);
+                }
                 break;
+            }
+            else{
+                checkPathTakenGetDFS(4);
             }
 
             if (order == DepthFirstSearchOrder.inOrder) {
+                checkPathTakenGetDFS(5);
                 if (lesser != null) {
+                    checkPathTakenGetDFS(6);
                     node = lesser;
                 } else {
+                    checkPathTakenGetDFS(7);
                     if (!added.contains(node)) {
+                        checkPathTakenGetDFS(8);
                         nodes[index++] = node.id;
                         added.add(node);
+                    }else{
+                        checkPathTakenGetDFS(9);
                     }
                     if (greater != null) {
+                        checkPathTakenGetDFS(10);
                         node = greater;
                     } else if (added.contains(node)) {
+                        checkPathTakenGetDFS(11);
                         node = parent;
                     } else {
+                        checkPathTakenGetDFS(12);
                         // We should not get here. Stop the loop!
                         node = null;
                     }
                 }
             } else if (order == DepthFirstSearchOrder.preOrder) {
+                checkPathTakenGetDFS(13);
                 if (!added.contains(node)) {
+                    checkPathTakenGetDFS(14);
                     nodes[index++] = node.id;
                     added.add(node);
+                }else{
+                    checkPathTakenGetDFS(15);
                 }
                 if (lesser != null) {
+                    checkPathTakenGetDFS(16);
                     node = lesser;
                 } else if (greater != null) {
+                    checkPathTakenGetDFS(17);
                     node = greater;
                 } else if (added.contains(node)) {
+                    checkPathTakenGetDFS(18);
                     node = parent;
                 } else {
+                    checkPathTakenGetDFS(19);
                     // We should not get here. Stop the loop!
                     node = null;
                 }
             } else {
+                checkPathTakenGetDFS(20);
                 // post-Order
                 if (lesser != null) {
+                    checkPathTakenGetDFS(21);
                     node = lesser;
                 } else {
+                    checkPathTakenGetDFS(22);
                     if (greater != null) {
+                        checkPathTakenGetDFS(23);
                         node = greater;
                     } else {
+                        checkPathTakenGetDFS(24);
                         // lesser==null && greater==null
                         nodes[index++] = node.id;
                         added.add(node);
@@ -587,12 +707,13 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
                 }
             }
         }
+        checkPathTakenGetDFS(25);
         return nodes;
     }
 
     /**
      * Get an array representation of the tree in sorted order.
-     * 
+     *
      * @return sorted array representing the tree.
      */
     public T[] getSorted() {
@@ -625,7 +746,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
 
         /**
          * Node constructor.
-         * 
+         *
          * @param parent
          *            Parent link in tree. parent can be NULL.
          * @param id
@@ -650,7 +771,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
 
         /**
          * Create a new Node with the following parameters.
-         * 
+         *
          * @param parent
          *            of this node.
          * @param id
@@ -764,7 +885,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements ITree<T> {
              */
             @Override
             public boolean hasNext() {
-                if (toVisit.size()>0) return true; 
+                if (toVisit.size()>0) return true;
                 return false;
             }
 
