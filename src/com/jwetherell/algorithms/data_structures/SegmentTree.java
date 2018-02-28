@@ -457,6 +457,24 @@ public abstract class SegmentTree<D extends SegmentTree.Data> {
 
             public N minimum = null;
 
+
+            private static boolean[] combinedConds = new boolean[22];
+
+            private void checkCond (int index) {
+                if (!combinedConds[index]) {
+                    combinedConds[index] = true;
+                    System.out.printf("[combined()] Branch id %d taken%n", index);
+                }
+            }
+
+            public void printChecks(){
+                System.out.println("These branches were not taken: ");
+                for (int i = 0; i < combinedConds.length; i++) {
+                    if (!combinedConds[i])
+                        System.out.println(" "+i);
+                }
+            }
+
             public RangeMinimumData(long start, long end) {
                 super(start, end);
             }
@@ -516,36 +534,82 @@ public abstract class SegmentTree<D extends SegmentTree.Data> {
             }
 
             private void combined(RangeMinimumData<N> data) {
-                if (this.minimum == null && data.minimum == null)
+                if (this.minimum == null && data.minimum == null){
+                    checkCond(0);
                     return;
-                else if (this.minimum != null && data.minimum == null)
+                }
+                else if (this.minimum != null && data.minimum == null){
+                    checkCond(1);
                     return;
-                else if (this.minimum == null && data.minimum != null)
+                }
+                else if (this.minimum == null && data.minimum != null){
+                    checkCond(2);
                     this.minimum = data.minimum;
+                }
                 else {
+                    checkCond(3);
                     /* TODO: This is ugly */
                     if (this.minimum instanceof BigDecimal || data.minimum instanceof BigDecimal) {
-                        if (((BigDecimal)data.minimum).compareTo(((BigDecimal)this.minimum))==-1)
+                        checkCond(4);
+                        if (((BigDecimal)data.minimum).compareTo(((BigDecimal)this.minimum))==-1){
+                            checkCond(5);
                             this.minimum = data.minimum;
+                        }
+                        else {
+                            checkCond(6);
+                        }
                     } else if (this.minimum instanceof BigInteger || data.minimum instanceof BigInteger) {
-                        if (((BigInteger)data.minimum).compareTo(((BigInteger)this.minimum))==-1)
+                        checkCond(7);
+                        if (((BigInteger)data.minimum).compareTo(((BigInteger)this.minimum))==-1){
+                            checkCond(8);
                             this.minimum = data.minimum;
+                        }
+                        else {
+                            checkCond(9);
+                        }
                     } else if (this.minimum instanceof Long || data.minimum instanceof Long) {
-                        if (((Long)data.minimum).compareTo(((Long)this.minimum))==-1)
+                        checkCond(10);
+                        if (((Long)data.minimum).compareTo(((Long)this.minimum))==-1){
+                            checkCond(11);
                             this.minimum = data.minimum;
+                        }
+                        else {
+                            checkCond(12);
+                        }
                     } else if (this.minimum instanceof Double || data.minimum instanceof Double) {
-                        if (((Double)data.minimum).compareTo(((Double)this.minimum))==-1)
+                        checkCond(13);
+                        if (((Double)data.minimum).compareTo(((Double)this.minimum))==-1){
+                            checkCond(14);
                             this.minimum = data.minimum;
+                        }
+                        else {
+                            checkCond(15);
+                        }
                     } else if (this.minimum instanceof Float || data.minimum instanceof Float) {
-                        if (((Float)data.minimum).compareTo(((Float)this.minimum))==-1)
+                        checkCond(16);
+                        if (((Float)data.minimum).compareTo(((Float)this.minimum))==-1){
+                            checkCond(17);
                             this.minimum = data.minimum;
+                        }
+                        else {
+                            checkCond(18);
+                        }
                     } else {
+                        checkCond(19);
                         // Integer
-                        if (((Integer)data.minimum).compareTo(((Integer)this.minimum))==-1)
+                        if (((Integer)data.minimum).compareTo(((Integer)this.minimum))==-1){
+                            checkCond(20);
                             this.minimum = data.minimum;
+                        }
+                        else {
+                            checkCond(21);
+                        }
                     }
                 }
             }
+
+
+
 
             /**
              * {@inheritDoc}
