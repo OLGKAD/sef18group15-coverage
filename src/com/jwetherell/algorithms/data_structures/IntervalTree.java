@@ -165,7 +165,7 @@ public class IntervalTree<O extends Object> {
         private Interval<O> right = null;
         private List<IntervalData<O>> overlap = new ArrayList<IntervalData<O>>();
 
-        private static boolean[] conditions = new boolean[10];
+        private static boolean[] conditions = new boolean[19];
         
         private void checkCond(int index){
             if(!conditions[index]){
@@ -195,7 +195,7 @@ public class IntervalTree<O extends Object> {
                     if (data.start > index){
                         checkCond(0);
                         break;
-                    }
+                    } else checkCond(10);
                     IntervalData<O> temp = data.query(index);
                     if (results == null && temp != null){
                         checkCond(1);
@@ -203,7 +203,7 @@ public class IntervalTree<O extends Object> {
                     }else if (results != null && temp != null){
                         checkCond(2);
                         results.combined(temp);
-                    }
+                    } else checkCond(11);
                 }
             } else if (index >= center) {
                 // overlap is reverse sorted by end point
@@ -212,7 +212,7 @@ public class IntervalTree<O extends Object> {
                     if (data.end < index){
                         checkCond(3);
                         break;
-                    }
+                    } else checkCond(12);
                     IntervalData<O> temp = data.query(index);
                     if (results == null && temp != null){
                         checkCond(4);
@@ -220,7 +220,7 @@ public class IntervalTree<O extends Object> {
                     }else if (results != null && temp != null){
                         checkCond(5);
                         results.combined(temp);
-                    }
+                    } else checkCond(13);
                 }
             }
 
@@ -233,8 +233,8 @@ public class IntervalTree<O extends Object> {
                     }else if (results != null && temp != null){
                         checkCond(7);
                         results.combined(temp);
-                    }
-                }
+                    } else checkCond(14);
+                } else checkCond(15); 
             } else if (index >= center) {
                 if (right != null) {
                     IntervalData<O> temp = right.query(index);
@@ -244,9 +244,9 @@ public class IntervalTree<O extends Object> {
                     }else if (results != null && temp != null){
                         checkCond(9);
                         results.combined(temp);
-                    }
-                }
-            }
+                    } else checkCond(16);
+                } else checkCond(17);
+            } else checkCond(18);
             return results;
         }
 
