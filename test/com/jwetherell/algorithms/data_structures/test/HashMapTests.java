@@ -38,6 +38,7 @@ public class HashMapTests {
          * After inserting one item, the new size should be 0 when cleared.
          */
         HashMap<Integer, Integer> map1 = new HashMap<>(HashMap.Type.CHAINING);
+        map1.clear();
         assertEquals(0, map1.size());
         map1.put(2, 3);
         assertEquals(1, map1.size());
@@ -45,6 +46,7 @@ public class HashMapTests {
         assertEquals(0, map1.size());
 
         HashMap<Integer, Integer> map2 = new HashMap<>(HashMap.Type.PROBING);
+        map2.clear();
         assertEquals(0, map2.size());
         map2.put(3, 2);
         assertEquals(1, map2.size());
